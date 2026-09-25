@@ -21,3 +21,4 @@ models/*.pt
 .idea/
 .DS_Store
 Thumbs.db
+**/.ipynb_checkpoints/
