@@ -6,29 +6,42 @@ Mục tiêu: dùng dữ liệu mua hàng để chia khách thành VIP, Thường
 
 ## 1. Nguồn dữ liệu
 
-| Dữ liệu | Nguồn dự kiến | Định dạng | Cập nhật / xử lý | Khối lượng |
-|---|---|---|---|---|
-| Khách hàng | customers_raw.csv của case study | CSV | Kiểm tra mỗi lần nhận file; lịch cập nhật nguồn chưa xác nhận | Khoảng 65.000 hồ sơ theo case study; chưa đếm file |
-| Đơn hàng | orders_2024_2026.csv của case study | CSV | Tính phân khúc hằng tháng; lịch cập nhật nguồn chưa xác nhận | Chưa đếm file |
-| Chi tiết đơn hàng | order_item, dùng đối chiếu nếu có nguồn | CSV hoặc bảng | Kiểm tra cùng dữ liệu đơn hàng | Chưa xác nhận nguồn và số dòng |
+| File mẫu | Số dòng đã đọc | Định dạng |
+|---|---:|---|
+| customers_raw.csv | 67.037 | CSV |
+| orders_2024_2026.csv | 26.000 | CSV |
+| order_item | Chưa có file mẫu | — |
 
-## 2. Các thông tin cần có
+## 2. Cột thật và tỷ lệ thiếu
 
-| Dữ liệu | Tên cột dự kiến | Ý nghĩa | Kiểu dữ liệu | Điều kiện hợp lệ | Tỷ lệ thiếu trên mẫu |
-|---|---|---|---|---|---|
-| Khách hàng | customer_id | Mã khách hàng | Chuỗi | Có giá trị, không trùng | Chưa đo |
-| Khách hàng | full_name | Tên khách hàng | Chuỗi | Dùng khi tra cứu theo tên | Chưa đo |
-| Đơn hàng | order_id | Mã đơn hàng | Chuỗi | Có giá trị, không trùng sau xử lý | Chưa đo |
-| Đơn hàng | customer_id | Mã khách của đơn | Chuỗi | Có trong danh sách khách hàng | Chưa đo |
-| Đơn hàng | order_date | Ngày mua hàng | Ngày/giờ | Đọc được ngày, thuộc kỳ khi tính | Chưa đo |
-| Đơn hàng | total_amount | Tổng tiền sau giảm giá | Số | Không âm, đơn vị đồng | Chưa đo |
-| Đơn hàng | status | Trạng thái đơn | Chuỗi | Phân biệt hoàn tất, hủy, trả lại theo dữ liệu nguồn | Chưa đo |
-| Chi tiết đơn | order_id | Mã đơn liên quan | Chuỗi | Có trong danh sách đơn hàng | Chưa đo |
-| Chi tiết đơn | line_id | Mã dòng hàng | Chuỗi | Không trùng trong cùng đơn | Chưa đo |
-| Chi tiết đơn | quantity | Số lượng sản phẩm | Số nguyên | Lớn hơn 0 | Chưa đo |
-| Chi tiết đơn | unit_price | Đơn giá | Số | Không âm, đơn vị đồng | Chưa đo |
+Tính ô rỗng hoặc chỉ có khoảng trắng trên tổng số dòng của từng file.
 
-Tỷ lệ thiếu = số dòng thiếu thông tin ở cột / tổng số dòng × 100%.
+| File | Cột trong CSV | Số ô thiếu | Tỷ lệ thiếu |
+|---|---|---:|---:|
+| customers_raw.csv | record_id | 0 | 0,00% |
+| customers_raw.csv | ho_ten | 0 | 0,00% |
+| customers_raw.csv | so_dien_thoai | 4.133 | 6,17% |
+| customers_raw.csv | email | 30.157 | 44,99% |
+| customers_raw.csv | dia_chi | 6.023 | 8,98% |
+| customers_raw.csv | ngay_tao | 0 | 0,00% |
+| orders_2024_2026.csv | order_id | 0 | 0,00% |
+| orders_2024_2026.csv | ma_don | 0 | 0,00% |
+| orders_2024_2026.csv | ma_cua_hang | 0 | 0,00% |
+| orders_2024_2026.csv | ngay | 114 | 0,44% |
+| orders_2024_2026.csv | ten_khach | 0 | 0,00% |
+| orders_2024_2026.csv | so_dien_thoai | 1.488 | 5,72% |
+| orders_2024_2026.csv | thanh_tien | 279 | 1,07% |
+| orders_2024_2026.csv | nhan_vien | 1.011 | 3,89% |
+| orders_2024_2026.csv | ghi_chu | 12.961 | 49,85% |
+
+| Trường cần cho phân khúc | Cột tìm thấy trong file |
+|---|---|
+| Mã khách | customers: record_id; orders: không có mã khách chung |
+| Mã đơn | orders: có order_id và ma_don; cần xác nhận cột dùng làm mã đơn nghiệp vụ |
+| Tên khách | customers: ho_ten; orders: ten_khach |
+| Ngày mua | orders: ngay |
+| Tổng tiền | orders: thanh_tien |
+| Trạng thái đơn | Không có cột trạng thái trong file orders |
 
 ## 3. Kiểm tra chất lượng dữ liệu
 
@@ -37,16 +50,16 @@ Tỷ lệ thiếu = số dòng thiếu thông tin ở cột / tổng số dòng 
 | Đủ các cột bắt buộc để tính | 100% cột cần thiết có mặt | Thiếu cột thì dừng và báo tên cột thiếu |
 | Các cột trọng yếu không bị thiếu | Mỗi cột trọng yếu đầy đủ ít nhất 95% trên dữ liệu nguồn | Báo tỷ lệ thiếu; không dùng dòng thiếu để gán nhãn |
 | Mã đơn trong dữ liệu dùng tính không trùng | 0 mã đơn trùng | Bản trùng hoàn toàn giữ một; bản khác nhau cùng mã thì tách ra kiểm tra |
-| Mã khách của đơn tồn tại | 100% trong dữ liệu dùng tính | Tách đơn không tìm được khách; nếu không xác định khách bị ảnh hưởng thì chưa công bố kết quả |
+| Nối đơn với khách hàng | 100% đơn dùng tính nối được tới khách bằng mã ổn định | CSV chưa có mã khách chung; chưa tính phân khúc đến khi có ánh xạ được xác nhận |
 | Ngày mua và tổng tiền hợp lệ | 100% trong dữ liệu dùng tính | Tách dòng sai; ghi lỗi cho khách liên quan |
 
-Cột trọng yếu: mã khách ở bảng khách; mã đơn, mã khách, ngày mua và tổng tiền ở bảng đơn.
+Cột trọng yếu hiện có: customers.record_id; orders.order_id, ngay và thanh_tien. CSV chưa có mã khách chung trong bảng đơn.
 
 Khách có lỗi dữ liệu quan trọng được ghi “Lỗi dữ liệu” (DATA_ERROR), chưa gán phân khúc. Khách không có đơn và không có lỗi thì chỉ số bằng 0. Không gộp các mã khách khác nhau vì việc gộp hồ sơ nằm ngoài phạm vi.
 
 ## 4. Cách tính và quy tắc phân khúc
 
-- Chỉ tính đơn hoàn tất hợp lệ; cách xử lý đơn hủy/trả lại cần đối chiếu trạng thái nguồn.
+- File đơn chưa có cột trạng thái; chưa xác định được đơn hoàn tất, hủy hoặc trả lại từ CSV hiện có.
 - Tổng chi tiêu: cộng tổng tiền của các đơn trong 12 tháng gần nhất.
 - Số đơn 12 tháng và số đơn 90 ngày: đếm mã đơn khác nhau trong từng khoảng thời gian.
 - Một đơn có nhiều sản phẩm vẫn chỉ tính là một đơn; không cộng tổng tiền đơn nhiều lần.

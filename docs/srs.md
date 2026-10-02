@@ -32,7 +32,7 @@ Quy ước của bài:
 
 - Ưu tiên VIP → Thường xuyên → Mới → Ngủ đông; mỗi khách hợp lệ chỉ nhận một nhãn.
 - Tính lại hàng tháng. Ngày chốt là ngày đầu tháng kế tiếp; lấy 12 tháng lịch và 90 ngày trước ngày chốt, không tính giao dịch từ ngày chốt trở đi.
-- Chỉ dùng đơn hoàn tất hợp lệ; mỗi mã đơn được đếm và cộng tiền một lần. Trạng thái đơn cần đối chiếu dữ liệu nguồn.
+- Chỉ dùng đơn hoàn tất hợp lệ; mỗi mã đơn được tính một lần. CSV mẫu chưa có mã khách chung hoặc trạng thái đơn. Trước khi tính, phải xác nhận cách nối ten_khach/so_dien_thoai với customers.record_id và cách nhận diện đơn hoàn tất; nếu chưa xác nhận được thì chặn tính, báo lỗi nguồn.
 - Không có đơn và không có lỗi: chỉ số bằng 0. Khách thiếu dữ liệu quan trọng: ghi DATA_ERROR, chưa gán phân khúc.
 
 ## 3. User Story và yêu cầu chức năng
@@ -54,9 +54,9 @@ Quy ước của bài:
 
 | Mã | US | Given – Bối cảnh | When – Hành động | Then – Kết quả |
 |---|---|---|---|---|
-| AC-01 | US-02 | Dữ liệu đủ cột bắt buộc, khóa và giá trị hợp lệ | Kiểm tra dữ liệu | Hiện số dòng hợp lệ và số dòng lỗi |
+| AC-01 | US-02 | Dữ liệu đủ cột bắt buộc, đã xác nhận cách nối khách và nhận diện đơn hoàn tất | Kiểm tra dữ liệu | Hiện số dòng hợp lệ và số dòng lỗi |
 | AC-02 | US-02 | Có bản ghi đơn hàng trùng hoàn toàn | Kiểm tra dữ liệu | Chỉ giữ một bản, ghi số bản trùng bị loại |
-| AC-03 – ngoại lệ | US-02 | Thiếu cột bắt buộc | Kiểm tra dữ liệu | Báo tên cột thiếu và chặn tính phân khúc |
+| AC-03 – ngoại lệ | US-02 | Thiếu cột bắt buộc hoặc chưa xác nhận được cách nối khách/trạng thái đơn | Kiểm tra dữ liệu | Báo lỗi nguồn và chặn tính phân khúc |
 | AC-04 | US-03 | Khách có hai đơn hợp lệ 6 triệu và 4 triệu trong cửa sổ 12 tháng | Tính chỉ số | Chi tiêu bằng 10 triệu, số đơn bằng 2 |
 | AC-05 | US-03 | Một đơn có ba dòng hàng | Tính chỉ số | Đếm một đơn, tổng tiền đơn chỉ cộng một lần |
 | AC-06 – ngoại lệ | US-03 | Đơn thiếu tổng tiền hoặc ngày mua không hợp lệ | Tính chỉ số | Ghi khách DATA_ERROR, không công bố chỉ số của khách đó |
@@ -69,7 +69,7 @@ Quy ước của bài:
 | Mã | Yêu cầu |
 |---|---|
 | FR-01 | Cho chọn kỳ phân tích; dùng kỳ mặc định nếu chưa chọn. |
-| FR-02 | Kiểm tra dữ liệu, báo số dòng hợp lệ/lỗi và lý do lỗi. |
+| FR-02 | Kiểm tra cột bắt buộc, cách nối khách và trạng thái đơn; báo lỗi, chặn tính khi chưa xác nhận được ánh xạ. |
 | FR-03 | Tính tổng chi tiêu, số đơn 12 tháng và số đơn 90 ngày của từng khách. |
 | FR-04 | Gán một phân khúc theo QT-12 cho khách hợp lệ. |
 | FR-05 | Lọc kết quả theo phân khúc hoặc mã khách. |
@@ -96,7 +96,7 @@ Actor: nhân viên Marketing. Sơ đồ: `docs/use-case.drawio`.
 - Mục tiêu: tạo kết quả phân khúc theo QT-12.
 - Actor: nhân viên Marketing.
 - Bắt đầu: Marketing yêu cầu tính phân khúc.
-- Điều kiện trước: có kỳ phân tích và nguồn dữ liệu truy cập được; Marketing có quyền đọc dữ liệu.
+- Điều kiện trước: có kỳ phân tích, nguồn dữ liệu truy cập được, quyền đọc dữ liệu và đã xác nhận cách nối đơn với khách cùng trạng thái đơn.
 - Điều kiện sau thành công: có chỉ số, phân khúc và lý do theo khách/kỳ; khách lỗi được tách riêng.
 - Điều kiện sau thất bại: không công bố kết quả dở dang, giữ kết quả trước đó.
 
@@ -112,7 +112,7 @@ Luồng chính:
 Luồng ngoại lệ:
 
 - **2a:** Kỳ sai hoặc chưa kết thúc → báo lỗi, trở về bước 1.
-- **2b:** Thiếu cột bắt buộc hoặc không đọc được nguồn → dừng, báo lỗi.
+- **2b:** Thiếu cột bắt buộc, không đọc được nguồn hoặc chưa xác nhận được cách nối khách/trạng thái đơn → dừng, báo lỗi nguồn.
 - **3a:** Dòng dữ liệu lỗi → ghi DATA_ERROR cho khách bị ảnh hưởng; nếu không xác định được khách bị ảnh hưởng thì chưa công bố kết quả.
 - **5a:** Tạo/lưu kết quả thất bại → báo lỗi, giữ kết quả trước đó.
 
