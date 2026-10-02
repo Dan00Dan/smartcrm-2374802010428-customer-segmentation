@@ -53,7 +53,7 @@
         <mxCell id="assoc7" source="actor" target="uc7" style="endArrow=none;startArrow=none;html=0;strokeColor=#94a3b8;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;entryPerimeter=0;exitPerimeter=0;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-      </root>
+      <mxCell id="legend" value="Chú thích: US-xx dưới Use Case là User Story được hỗ trợ." style="rounded=1;whiteSpace=wrap;html=0;fillColor=#f8fafc;strokeColor=#cbd5e1;strokeWidth=1;fontColor=#475569;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="465" y="922" width="510" height="30" as="geometry" /></mxCell></root>
     </mxGraphModel>
   </diagram>
 </mxfile>
