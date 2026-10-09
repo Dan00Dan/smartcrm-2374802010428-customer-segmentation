@@ -53,7 +53,7 @@ Sẽ bổ sung lệnh chạy kiểm thử và số lượng test PASS khi triể
 - [x] Khởi tạo repository và môi trường ảo.
 - [x] Soạn nội dung phân tích và thiết kế BT1.
 - [x] Đưa các sơ đồ, wireframe và khai báo AI lên nhánh `dev`.
-- [ ] Đồng bộ SRS và đặc tả dữ liệu trên repo với báo cáo BT1.
+- [x] Đồng bộ SRS và đặc tả dữ liệu trên repo với báo cáo BT1.
 - [ ] Triển khai kiểm tra và xử lý dữ liệu.
 - [ ] Triển khai tính chỉ số và phân khúc theo QT-12.
 - [ ] Xây dựng dashboard.
