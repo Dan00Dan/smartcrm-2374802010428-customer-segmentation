@@ -1,0 +1,75 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="use-case" name="use-case">
+    <mxGraphModel dx="811" dy="575" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1000" pageHeight="760" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="reYXDRuearDnoqKP_b3E-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="603" width="601" x="343" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" edge="1" parent="1" source="actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc0" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="da" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" target="uc0" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="242.16" y="147" />
+              <mxPoint x="242.16" y="147" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="title" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2B5B93;fontSize=16;" value="HỆ THỐNG PHÂN KHÚC KHÁCH HÀNG" vertex="1">
+          <mxGeometry height="42" width="430" x="430" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="actor" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;align=center;outlineConnect=0;fontSize=16;fontColor=#17365B;strokeColor=#17365B;whiteSpace=wrap;" value="Nhân viên Marketing" vertex="1">
+          <mxGeometry height="100" width="70" x="110" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="da" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;align=center;outlineConnect=0;fontSize=16;fontColor=#17365B;strokeColor=#17365B;whiteSpace=wrap;" value="Người phân tích dữ liệu" vertex="1">
+          <mxGeometry height="100" width="70" x="117" y="97" as="geometry" />
+        </mxCell>
+        <mxCell id="uc0" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF5FF;strokeColor=#2B5B93;fontSize=16;" value="UC-01 · Xem chất lượng dữ liệu" vertex="1">
+          <mxGeometry height="54" width="450" x="420" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF5FF;strokeColor=#2B5B93;fontSize=16;" value="UC-02 · Xem chỉ số mua hàng" vertex="1">
+          <mxGeometry height="54" width="450" x="420" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="uc2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF5FF;strokeColor=#2B5B93;fontSize=16;" value="UC-03 · Tính và gán phân khúc" vertex="1">
+          <mxGeometry height="54" width="450" x="420" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="uc3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF5FF;strokeColor=#2B5B93;fontSize=16;" value="UC-04 · Lọc danh sách khách" vertex="1">
+          <mxGeometry height="54" width="450" x="420" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="uc4" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF5FF;strokeColor=#2B5B93;fontSize=16;" value="UC-05 · Xuất danh sách phân khúc" vertex="1">
+          <mxGeometry height="54" width="450" x="420" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="uc5" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF5FF;strokeColor=#2B5B93;fontSize=16;" value="UC-06 · Xem thống kê phân khúc" vertex="1">
+          <mxGeometry height="54" width="450" x="420" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="uc6" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF5FF;strokeColor=#2B5B93;fontSize=16;" value="UC-07 · Xem căn cứ gán nhãn" vertex="1">
+          <mxGeometry height="54" width="450" x="420" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#2B5B93;fontSize=16;" value="Chú thích: hình người = Actor; hình bầu dục = Use Case; hình chữ nhật = ranh giới hệ thống.&lt;br&gt;Đường nối không mũi tên = actor tham gia; UC-03 phục vụ US-01 và US-04 (8 US, 7 UC)." vertex="1">
+          <mxGeometry height="75" width="910" x="45" y="665" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
