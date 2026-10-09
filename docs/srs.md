@@ -1,140 +1,135 @@
-# SRS – L1: Tính và gán phân khúc khách hàng
+# SRS – Hệ thống phân khúc khách hàng
 
-Trần Thị Như Quỳnh | MSSV: 2374802010428 | Track DA
+Trần Thị Như Quỳnh | MSSV: 2374802010428 | Track DA  
+Luồng L1 – Hồ sơ khách hàng & phân khúc
 
-## 1. Giới thiệu
+## 1. Giới thiệu và phạm vi
 
-Công cụ giúp nhân viên Marketing phân khúc khách hàng theo dữ liệu mua hàng và QT-12 để lựa chọn nhóm khách phù hợp cho hoạt động chăm sóc.
+Hệ thống hỗ trợ nhân viên Marketing phân khúc khách hàng theo
+dữ liệu mua hàng và quy tắc QT-12 để lựa chọn nhóm khách phù hợp
+cho hoạt động chăm sóc.
+
+Phạm vi gồm kiểm tra dữ liệu, chọn kỳ, tính chỉ số mua hàng,
+gán phân khúc, lọc danh sách, thống kê, xem căn cứ gán nhãn
+và xuất CSV.
+
+Ngoài phạm vi (WON'T): tạo hoặc gộp hồ sơ khách hàng,
+quản lý bán hàng, tự động gửi khuyến mãi và dự báo bằng ML.
+
+### Bảng thuật ngữ
 
 | Thuật ngữ | Ý nghĩa |
 |---|---|
-| customer | Khách hàng |
-| order | Đơn hàng |
-| order_item | Dòng hàng trong đơn |
-| customer_segment | Kết quả phân khúc |
+| Khách hàng | Đối tượng được phân khúc, nhận diện bằng mã khách nguồn |
+| Đơn hàng | Giao dịch mua hàng; mỗi mã đơn hợp lệ được tính một lần |
+| Phân khúc | Nhóm VIP, Thường xuyên, Mới hoặc Ngủ đông |
+| Kỳ phân tích | Tháng được chọn để tính và xem kết quả |
+| QT-12 | Quy tắc phân khúc theo chi tiêu và số đơn mua hàng |
+| DATA_ERROR | Trạng thái khách có lỗi dữ liệu quan trọng, chưa được gán nhãn |
 | FR / NFR | Yêu cầu chức năng / yêu cầu phi chức năng |
-| GWT | Given – bối cảnh; When – hành động; Then – kết quả cần đạt |
+| GWT | Given: bối cảnh; When: hành động; Then: kết quả |
+| MoSCoW | MUST: bắt buộc; SHOULD: nên có; COULD: có thể có; WON'T: ngoài phạm vi |
 
-## 2. Phạm vi và quy tắc
+## 2. Các bên liên quan và vai trò
 
-- Người sử dụng: nhân viên Marketing.
-- Thực hiện: kiểm tra dữ liệu, tính chỉ số mua hàng, gán phân khúc, lọc, thống kê và xem căn cứ phân khúc; xuất CSV ở mức COULD.
-- Không thực hiện: tạo/gộp hồ sơ khách hàng, gửi khuyến mãi hoặc dự báo bằng ML.
+| Vai trò | Được thực hiện | Không được thực hiện trong phạm vi hệ thống |
+|---|---|---|
+| Nhân viên Marketing | Xem kết quả kiểm tra dữ liệu; chọn kỳ; yêu cầu tính phân khúc; xem chỉ số, thống kê, căn cứ; lọc và xuất kết quả | Sửa dữ liệu nguồn, thay đổi QT-12 hoặc tự sửa nhãn đã tính |
+| Người phân tích dữ liệu | Xem kết quả kiểm tra chất lượng dữ liệu và nguyên nhân lỗi để xác định dữ liệu cần xử lý | Tự gán nhãn khách hoặc công bố kết quả khi nguồn chưa đủ điều kiện |
 
-| Phân khúc | Điều kiện theo QT-12 |
-|---|---|
-| VIP | Chi tiêu 12 tháng ≥30 triệu đồng HOẶC số đơn 12 tháng ≥8 |
-| Thường xuyên | Chi tiêu 12 tháng ≥10 triệu đồng HOẶC số đơn 12 tháng ≥3 |
-| Mới | Có đúng 1 đơn trong 90 ngày gần nhất |
-| Ngủ đông | Các khách hợp lệ còn lại |
-
-Quy ước của bài:
-
-- Ưu tiên VIP → Thường xuyên → Mới → Ngủ đông; mỗi khách hợp lệ chỉ nhận một nhãn.
-- Tính lại hàng tháng. Ngày chốt là ngày đầu tháng kế tiếp; lấy 12 tháng lịch và 90 ngày trước ngày chốt, không tính giao dịch từ ngày chốt trở đi.
-- Chỉ dùng đơn hoàn tất hợp lệ; mỗi mã đơn được tính một lần. CSV mẫu chưa có mã khách chung hoặc trạng thái đơn. Trước khi tính, phải xác nhận cách nối ten_khach/so_dien_thoai với customers.record_id và cách nhận diện đơn hoàn tất; nếu chưa xác nhận được thì chặn tính, báo lỗi nguồn.
-- Không có đơn và không có lỗi: chỉ số bằng 0. Khách thiếu dữ liệu quan trọng: ghi DATA_ERROR, chưa gán phân khúc.
-
-## 3. User Story và yêu cầu chức năng
+## 3. Yêu cầu chức năng
 
 ### 3.1. User Story
 
 | Mã | Nội dung | MoSCoW |
 |---|---|---|
 | US-01 | Là nhân viên Marketing, tôi muốn chọn tháng phân tích để xem kết quả đúng kỳ cần đánh giá. | SHOULD |
-| US-02 | Là nhân viên Marketing, tôi muốn xem kết quả kiểm tra chất lượng dữ liệu để nhận biết dữ liệu chưa đủ tin cậy cho việc phân khúc. | MUST |
-| US-03 | Là nhân viên Marketing, tôi muốn xem tổng chi tiêu và số đơn của từng khách trong 12 tháng để đánh giá giá trị mua hàng của khách. | MUST |
-| US-04 | Là nhân viên Marketing, tôi muốn gán phân khúc theo QT-12 để xác định nhóm khách cần chăm sóc. | MUST |
-| US-05 | Là nhân viên Marketing, tôi muốn lọc danh sách theo phân khúc và mã khách để tìm đúng khách cần xem. | SHOULD |
-| US-06 | Là nhân viên Marketing, tôi muốn xuất danh sách phân khúc để sử dụng và đối chiếu kết quả ngoài công cụ. | COULD |
+| US-02 | Là người phân tích dữ liệu, tôi muốn xem kết quả kiểm tra chất lượng dữ liệu để xác định dữ liệu đủ điều kiện phân khúc và các lỗi cần xử lý. | MUST |
+| US-03 | Là nhân viên Marketing, tôi muốn xem chi tiêu và số đơn của từng khách trong các cửa sổ quy định để đánh giá hoạt động mua hàng. | MUST |
+| US-04 | Là nhân viên Marketing, tôi muốn yêu cầu gán phân khúc theo QT-12 để xác định nhóm khách cần chăm sóc. | MUST |
+| US-05 | Là nhân viên Marketing, tôi muốn lọc theo phân khúc và mã khách để tìm đúng khách cần xem. | SHOULD |
+| US-06 | Là nhân viên Marketing, tôi muốn xuất danh sách phân khúc để sử dụng và đối chiếu ngoài hệ thống. | COULD |
 | US-07 | Là nhân viên Marketing, tôi muốn xem số lượng và tỷ lệ từng phân khúc để đánh giá quy mô các nhóm khách. | SHOULD |
-| US-08 | Là nhân viên Marketing, tôi muốn xem căn cứ gán phân khúc của từng khách để kiểm tra và giải thích kết quả. | SHOULD |
+| US-08 | Là nhân viên Marketing, tôi muốn xem căn cứ gán phân khúc để kiểm tra và giải thích kết quả. | SHOULD |
 
-### 3.2. Tiêu chí chấp nhận GWT cho MUST
-
-| Mã | US | Given – Bối cảnh | When – Hành động | Then – Kết quả |
-|---|---|---|---|---|
-| AC-01 | US-02 | Dữ liệu đủ cột bắt buộc, đã xác nhận cách nối khách và nhận diện đơn hoàn tất | Kiểm tra dữ liệu | Hiện số dòng hợp lệ và số dòng lỗi |
-| AC-02 | US-02 | Có bản ghi đơn hàng trùng hoàn toàn | Kiểm tra dữ liệu | Chỉ giữ một bản, ghi số bản trùng bị loại |
-| AC-03 – ngoại lệ | US-02 | Thiếu cột bắt buộc hoặc chưa xác nhận được cách nối khách/trạng thái đơn | Kiểm tra dữ liệu | Báo lỗi nguồn và chặn tính phân khúc |
-| AC-04 | US-03 | Khách có hai đơn hợp lệ 6 triệu và 4 triệu trong cửa sổ 12 tháng | Tính chỉ số | Chi tiêu bằng 10 triệu, số đơn bằng 2 |
-| AC-05 | US-03 | Một đơn có ba dòng hàng | Tính chỉ số | Đếm một đơn, tổng tiền đơn chỉ cộng một lần |
-| AC-06 – ngoại lệ | US-03 | Đơn thiếu tổng tiền hoặc ngày mua không hợp lệ | Tính chỉ số | Ghi khách DATA_ERROR, không công bố chỉ số của khách đó |
-| AC-07 | US-04 | Khách chi tiêu đúng 30 triệu hoặc có đúng 8 đơn trong 12 tháng | Gán phân khúc | Khách thuộc VIP |
-| AC-08 | US-04 | Khách đồng thời đạt VIP và Thường xuyên | Gán phân khúc | Chỉ gán VIP theo thứ tự ưu tiên |
-| AC-09 – ngoại lệ | US-04 | Khách có lỗi dữ liệu quan trọng | Gán phân khúc | Phân khúc để trống, hiển thị lý do lỗi |
-
-### 3.3. Yêu cầu chức năng
+### 3.2. Yêu cầu chức năng
 
 | Mã | Yêu cầu |
 |---|---|
-| FR-01 | Cho chọn kỳ phân tích; dùng kỳ mặc định nếu chưa chọn. |
-| FR-02 | Kiểm tra cột bắt buộc, cách nối khách và trạng thái đơn; báo lỗi, chặn tính khi chưa xác nhận được ánh xạ. |
-| FR-03 | Tính tổng chi tiêu, số đơn 12 tháng và số đơn 90 ngày của từng khách. |
-| FR-04 | Gán một phân khúc theo QT-12 cho khách hợp lệ. |
-| FR-05 | Lọc kết quả theo phân khúc hoặc mã khách. |
-| FR-06 | Xuất danh sách đã lọc ra CSV theo Data spec. |
-| FR-07 | Thống kê số lượng và tỷ lệ từng phân khúc; báo khách lỗi riêng. |
-| FR-08 | Hiển thị chỉ số và lý do gán nhãn của từng khách. |
+| FR-01 | Cho chọn tháng đã kết thúc; mặc định là tháng hoàn tất gần nhất. Báo lỗi nếu kỳ không hợp lệ. |
+| FR-02 | Kiểm tra cột bắt buộc, khóa, ngày, tiền, ánh xạ khách và trạng thái đơn; hiển thị số dòng hợp lệ, lỗi, trùng bị loại. Chặn tính khi nguồn chưa đủ điều kiện. |
+| FR-03 | Tính tổng chi tiêu 12 tháng, số đơn 12 tháng và số đơn 90 ngày cho từng khách từ các đơn hoàn tất hợp lệ. |
+| FR-04 | Gán đúng một phân khúc theo QT-12 cho khách hợp lệ; khách lỗi được ghi DATA_ERROR và để trống phân khúc. |
+| FR-05 | Cho lọc theo phân khúc, mã khách hoặc kết hợp cả hai trong kỳ đang xem. |
+| FR-06 | Xuất đúng danh sách sau lọc ra CSV UTF-8, có tiêu đề cột và kỳ phân tích. |
+| FR-07 | Hiển thị số khách và tỷ lệ từng phân khúc trên tổng khách OK; thống kê khách lỗi riêng. Nếu không có khách OK, tỷ lệ là “Không xác định”. |
+| FR-08 | Hiển thị chỉ số, căn cứ gán nhãn và phiên bản quy tắc; khách lỗi hiển thị nguyên nhân lỗi. |
 
-## 4. Use Case
+### 3.3. Tiêu chí chấp nhận cho các User Story MUST
 
-Actor: nhân viên Marketing. Sơ đồ: `docs/use-case.drawio`.
+| Mã | US | Given – Bối cảnh | When – Hành động | Then – Kết quả |
+|---|---|---|---|---|
+| AC-01 | US-02 | Nguồn đủ cột, đã xác nhận ánh xạ khách và trạng thái đơn | Kiểm tra dữ liệu | Hiển thị số dòng hợp lệ và lỗi |
+| AC-02 | US-02 | Có bản ghi đơn hàng trùng hoàn toàn | Kiểm tra dữ liệu | Giữ một bản, ghi số bản trùng bị loại |
+| AC-03 – ngoại lệ | US-02 | Thiếu cột hoặc chưa xác nhận ánh xạ khách/trạng thái đơn | Kiểm tra dữ liệu | Báo lỗi nguồn và chặn tính phân khúc |
+| AC-04 | US-03 | Khách có hai đơn hoàn tất hợp lệ 6 triệu và 4 triệu trong 12 tháng | Tính chỉ số | Chi tiêu bằng 10 triệu, số đơn 12 tháng bằng 2 |
+| AC-05 | US-03 | Một đơn hoàn tất hợp lệ có ba dòng hàng trong dữ liệu kiểm thử | Tính chỉ số | Đếm một đơn và cộng tổng tiền đơn một lần |
+| AC-06 – ngoại lệ | US-03 | Đơn thiếu tổng tiền hoặc sai ngày mua, xác định được khách | Tính chỉ số | Ghi khách DATA_ERROR, để trống các chỉ số |
+| AC-07 | US-04 | Khách hợp lệ có chi tiêu đúng 30 triệu hoặc đúng 8 đơn trong 12 tháng | Gán phân khúc | Gán VIP |
+| AC-08 | US-04 | Khách hợp lệ đồng thời đạt VIP và Thường xuyên | Gán phân khúc | Chỉ gán VIP |
+| AC-09 – ngoại lệ | US-04 | Khách có lỗi dữ liệu quan trọng | Gán phân khúc | Để trống phân khúc, hiển thị nguyên nhân lỗi |
 
-| Mã | Use Case |
-|---|---|
-| UC-01 | Xem kết quả kiểm tra chất lượng dữ liệu |
-| UC-02 | Xem chỉ số mua hàng của khách |
-| UC-03 | Tính và gán phân khúc khách hàng |
-| UC-04 | Lọc danh sách khách theo phân khúc |
-| UC-05 | Xuất danh sách phân khúc |
-| UC-06 | Xem thống kê phân khúc |
-| UC-07 | Xem căn cứ gán phân khúc |
+Sơ đồ Use Case: [usecase.drawio](usecase.drawio).
+UC-03 phục vụ cả US-01 và US-04 nên tám User Story liên kết
+với bảy Use Case.
 
-### Đặc tả UC-03
-
-- Mục tiêu: tạo kết quả phân khúc theo QT-12.
-- Actor: nhân viên Marketing.
-- Bắt đầu: Marketing yêu cầu tính phân khúc.
-- Điều kiện trước: có kỳ phân tích, nguồn dữ liệu truy cập được, quyền đọc dữ liệu và đã xác nhận cách nối đơn với khách cùng trạng thái đơn.
-- Điều kiện sau thành công: có chỉ số, phân khúc và lý do theo khách/kỳ; khách lỗi được tách riêng.
-- Điều kiện sau thất bại: không công bố kết quả dở dang, giữ kết quả trước đó.
-
-Luồng chính:
-
-1. Marketing xác nhận kỳ phân tích.
-2. Hệ thống kiểm tra kỳ và dữ liệu đầu vào.
-3. Hệ thống tính chi tiêu và số đơn hợp lệ.
-4. Hệ thống áp dụng QT-12 theo thứ tự ưu tiên.
-5. Hệ thống tạo kết quả, báo số khách hợp lệ và khách lỗi.
-6. Marketing xem kết quả.
-
-Luồng ngoại lệ:
-
-- **2a:** Kỳ sai hoặc chưa kết thúc → báo lỗi, trở về bước 1.
-- **2b:** Thiếu cột bắt buộc, không đọc được nguồn hoặc chưa xác nhận được cách nối khách/trạng thái đơn → dừng, báo lỗi nguồn.
-- **3a:** Dòng dữ liệu lỗi → ghi DATA_ERROR cho khách bị ảnh hưởng; nếu không xác định được khách bị ảnh hưởng thì chưa công bố kết quả.
-- **5a:** Tạo/lưu kết quả thất bại → báo lỗi, giữ kết quả trước đó.
-
-## 5. Yêu cầu phi chức năng
+## 4. Yêu cầu phi chức năng
 
 | Mã | Yêu cầu | Cách kiểm tra |
 |---|---|---|
-| NFR-01 | Tính phân khúc ≤60 giây với dữ liệu kiểm thử 65.000 khách và 26.000 đơn trên máy 4 lõi CPU, RAM 8 GB | Đo 3 lần, mỗi lần ≤60 giây |
-| NFR-02 | 100% khách hợp lệ có một nhãn; 0 dòng trùng mã khách/kỳ | Kiểm tra nhãn và khóa kết quả |
-| NFR-03 | Chạy lại 3 lần với cùng dữ liệu, kỳ và phiên bản quy tắc cho chỉ số/nhãn giống nhau 100% | So sánh kết quả theo mã khách/kỳ |
+| NFR-01 | Tính phân khúc ≤60 giây với bộ kiểm thử 65.000 khách và 26.000 đơn trên máy 4 lõi CPU, RAM 8 GB | Đo ba lần; mỗi lần ≤60 giây |
+| NFR-02 | 100% khách hợp lệ có đúng một nhãn; 0 dòng trùng mã khách/kỳ | Kiểm tra nhãn và khóa kết quả |
+| NFR-03 | Ba lần chạy cùng dữ liệu, kỳ và phiên bản quy tắc cho chỉ số và nhãn giống nhau 100% | So sánh kết quả theo mã khách/kỳ |
 
-## 6. Dữ liệu và bảng truy vết
+## 5. Ràng buộc và quy tắc nghiệp vụ
 
-Đầu vào: dữ liệu khách hàng, đơn hàng; dòng hàng dùng đối chiếu nếu có nguồn. Đầu ra: kết quả phân khúc và báo cáo lỗi. Chi tiết: `docs/data-spec.md`.
+### 5.1. Điều kiện phân khúc theo QT-12
 
-| FR | US | Use Case | MoSCoW |
+| Phân khúc | Điều kiện |
+|---|---|
+| VIP | Chi tiêu 12 tháng ≥30 triệu đồng HOẶC số đơn 12 tháng ≥8 |
+| Thường xuyên | Chi tiêu 12 tháng ≥10 triệu đồng HOẶC số đơn 12 tháng ≥3 |
+| Mới | Có đúng một đơn trong 90 ngày gần nhất |
+| Ngủ đông | Các khách hợp lệ còn lại |
+
+### 5.2. Quy tắc xử lý
+
+| Mã | Quy tắc |
+|---|---|
+| BR-01 | Ưu tiên VIP → Thường xuyên → Mới → Ngủ đông; mỗi khách hợp lệ nhận đúng một nhãn. |
+| BR-02 | Tính theo tháng. Ngày chốt D là 00:00 ngày đầu tháng kế tiếp, múi giờ Asia/Ho_Chi_Minh. Dùng cửa sổ [D−12 tháng lịch, D) và [D−90 ngày, D). |
+| BR-03 | Chỉ dùng đơn hoàn tất hợp lệ. Đếm mã đơn khác nhau; tổng tiền mỗi đơn chỉ cộng một lần. |
+| BR-04 | Bản trùng hoàn toàn giữ một; các bản mâu thuẫn cùng mã đơn được cách ly để kiểm tra. |
+| BR-05 | Khách không có đơn và không lỗi có chỉ số bằng 0. Khách có lỗi quan trọng được ghi DATA_ERROR, để trống chỉ số và phân khúc. |
+| BR-06 | Nếu không xác định được khách bị ảnh hưởng bởi lỗi thì chặn công bố kết quả. Không tự gộp hồ sơ dựa trên tên hoặc số điện thoại. |
+| BR-07 | Chỉ thay kết quả cũ khi toàn bộ kết quả mới được lưu thành công; nếu thất bại thì giữ kết quả trước đó. |
+
+CSV hiện có chưa chứa mã khách chung giữa hai nguồn và chưa có
+trạng thái đơn. Phải xác nhận mã đơn nghiệp vụ, ánh xạ đơn–khách
+và cách nhận diện đơn hoàn tất trước khi tính phân khúc.
+
+Chi tiết nguồn, chất lượng và đầu ra:
+[data-requirements.md](data-requirements.md).
+
+## 6. Bảng truy vết yêu cầu
+
+| FR | User Story | Use Case | MoSCoW |
 |---|---|---|---|
-| FR-01 | US-01 | UC-03 | SHOULD |
-| FR-02 | US-02 | UC-01 | MUST |
-| FR-03 | US-03 | UC-02 | MUST |
-| FR-04 | US-04 | UC-03 | MUST |
-| FR-05 | US-05 | UC-04 | SHOULD |
-| FR-06 | US-06 | UC-05 | COULD |
-| FR-07 | US-07 | UC-06 | SHOULD |
-| FR-08 | US-08 | UC-07 | SHOULD |
+| FR-01 | US-01 | UC-03 – Tính và gán phân khúc khách hàng | SHOULD |
+| FR-02 | US-02 | UC-01 – Xem kết quả kiểm tra chất lượng dữ liệu | MUST |
+| FR-03 | US-03 | UC-02 – Xem chỉ số mua hàng của khách | MUST |
+| FR-04 | US-04 | UC-03 – Tính và gán phân khúc khách hàng | MUST |
+| FR-05 | US-05 | UC-04 – Lọc danh sách khách theo phân khúc | SHOULD |
+| FR-06 | US-06 | UC-05 – Xuất danh sách phân khúc | COULD |
+| FR-07 | US-07 | UC-06 – Xem thống kê phân khúc | SHOULD |
+| FR-08 | US-08 | UC-07 – Xem căn cứ gán phân khúc | SHOULD |
