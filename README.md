@@ -1,74 +1,60 @@
-# Smart CRM – Hồ sơ khách hàng & phân khúc
+# Hệ thống phân khúc khách hàng theo dữ liệu mua hàng
 
-**Sinh viên:** Trần Thị Như Quỳnh – MSSV: 2374802010428  
-**Track:** Data Analyst (DA)  
-**Học phần:** Chuyên đề Tốt nghiệp 1 – Trường Đại học Văn Lang  
+**Sinh viên:** Trần Thị Như Quỳnh – 2374802010428 – Track DA  
+**Học phần:** Chuyên đề Tốt nghiệp 1, HK1 2026–2027  
+**Luồng nghiệp vụ:** L1 – Hồ sơ khách hàng & phân khúc
 
-## 1. Mô tả bài toán
+## 1. Mục tiêu
 
-Nhân viên Marketing tra cứu thông tin khách hàng và lịch sử mua hàng, kiểm tra dữ liệu cần thiết, tính tổng chi tiêu và số đơn hàng trong khoảng thời gian quy định, sau đó áp dụng quy tắc để phân khúc khách hàng.
+Hỗ trợ nhân viên Marketing phân khúc khách hàng thành VIP,
+Thường xuyên, Mới và Ngủ đông theo quy tắc QT-12.
+Người phân tích dữ liệu kiểm tra chất lượng dữ liệu đầu vào.
+Hệ thống tính chỉ số mua hàng, hiển thị phân khúc, hỗ trợ lọc,
+thống kê và xuất kết quả.
 
-Luồng nghiệp vụ:
+## 2. Yêu cầu môi trường
 
-Tra cứu khách hàng → kiểm tra lịch sử mua hàng → xử lý dữ liệu → tính tổng chi tiêu và số đơn hàng → phân khúc khách hàng → hiển thị kết quả.
+- Python 3.11 trở lên; sử dụng môi trường ảo `.venv`.
+- Thư viện: Pandas, NumPy, Jupyter, Matplotlib, SQLAlchemy,
+  psycopg2-binary và python-dotenv; xem `requirements.txt`.
+- Cơ sở dữ liệu dự kiến: PostgreSQL.
+- Biến môi trường: xem `.env.example`.
+- Mở sơ đồ `.drawio` bằng diagrams.net.
 
-## 2. Phạm vi
+## 3. Hướng dẫn chạy
 
-### Làm
-- Tra cứu thông tin khách hàng.
-- Đọc và xử lý dữ liệu lịch sử mua hàng.
-- Kiểm tra dữ liệu cần thiết trước khi phân tích.
-- Tính tổng chi tiêu của khách hàng.
-- Tính số lượng đơn hàng trong khoảng thời gian quy định.
-- Áp dụng quy tắc để phân khúc khách hàng.
-- Trình bày kết quả phân tích và phân khúc.
+BT1 đang ở giai đoạn phân tích và thiết kế.
+Hướng dẫn chạy chương trình sẽ được bổ sung khi triển khai BT2.
 
-### Không làm
-- Không xây dựng toàn bộ hệ thống CRM.
-- Không xây dựng chức năng quản lý bán hàng.
-- Không xây dựng chức năng marketing automation.
-- Không phát triển mô hình AI dự đoán hành vi khách hàng.
-
-## 3. Công nghệ sử dụng
-
-| Thành phần | Công nghệ |
-|---|---|
-| Ngôn ngữ lập trình | Python |
-| Xử lý dữ liệu | Pandas, NumPy |
-| Phân tích dữ liệu | Jupyter Notebook |
-| Trực quan hóa dữ liệu | Matplotlib |
-| Cơ sở dữ liệu | PostgreSQL |
-| Kết nối cơ sở dữ liệu | SQLAlchemy, psycopg2-binary |
-| Quản lý biến môi trường | python-dotenv |
-| Quản lý mã nguồn | Git, GitHub |
-| Môi trường phát triển | Visual Studio Code |
+Tài liệu nằm trong thư mục `docs/`.
+Mở file `.drawio` bằng https://app.diagrams.net.
+Xem thiết kế dashboard tại `docs/wireframe.png`.
 
 ## 4. Cấu trúc thư mục
 
-```text
-smartcrm-2374802010428-customer-segmentation/
-│
-├── docs/
-│   └── .gitkeep
-│
-├── data/
-│   ├── raw/
-│   │   └── .gitkeep
-│   └── processed/
-│       └── .gitkeep
-│
-├── notebooks/
-│   └── .gitkeep
-│
-├── src/
-│   ├── check_env.py
-│   └── etl/
-│       └── .gitkeep
-│
-├── dashboard/
-│   └── .gitkeep
-│
-├── requirements.txt
-├── .env.example
-├── .gitignore
-└── README.md
+- `docs/`: SRS, đặc tả dữ liệu, sơ đồ thiết kế, wireframe
+  và khai báo sử dụng AI.
+- `data/`: Dữ liệu đầu vào và dữ liệu sau xử lý.
+- `notebooks/`: Notebook khảo sát và phân tích dữ liệu.
+- `src/`: Mã nguồn xử lý dữ liệu và phân khúc khách hàng.
+- `dashboard/`: Giao diện hiển thị kết quả phân tích.
+- `tests/`: Mã kiểm thử, bổ sung khi triển khai.
+- `requirements.txt`: Danh sách thư viện Python.
+- `.env.example`: Mẫu cấu hình môi trường.
+- `.gitignore`: Danh sách file và thư mục không đưa lên GitHub.
+
+## 5. Kiểm thử
+
+Chưa có kết quả kiểm thử chức năng và hiệu năng.
+Sẽ bổ sung lệnh chạy kiểm thử và số lượng test PASS khi triển khai BT2.
+
+## 6. Trạng thái hiện tại
+
+- [x] Khởi tạo repository và môi trường ảo.
+- [x] Soạn nội dung phân tích và thiết kế BT1.
+- [x] Đưa các sơ đồ, wireframe và khai báo AI lên nhánh `dev`.
+- [ ] Đồng bộ SRS và đặc tả dữ liệu trên repo với báo cáo BT1.
+- [ ] Triển khai kiểm tra và xử lý dữ liệu.
+- [ ] Triển khai tính chỉ số và phân khúc theo QT-12.
+- [ ] Xây dựng dashboard.
+- [ ] Kiểm thử chức năng và hiệu năng.
