@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from transform.normalize_dates import normalize_date
-from transform.normalize_amount import normalize_amount
+from src.transform.normalize_dates import normalize_date
+from src.transform.normalize_amount import normalize_amount
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -30,7 +30,8 @@ def process_orders():
 
     if missing_columns:
         raise ValueError(
-            f"File đơn hàng thiếu cột bắt buộc: {', '.join(sorted(missing_columns))}"
+            "File đơn hàng thiếu cột bắt buộc: "
+            + ", ".join(sorted(missing_columns))
         )
 
     rows_before = len(df)
@@ -41,12 +42,10 @@ def process_orders():
     normalized_dates = original_dates.map(normalize_date)
     normalized_amounts = original_amounts.map(normalize_amount)
 
-    # Từ chối dòng có ngày hoặc số tiền không hợp lệ.
     invalid_date = normalized_dates.isna()
     invalid_amount = normalized_amounts.isna()
     invalid_mask = invalid_date | invalid_amount
 
-    # Dữ liệu hợp lệ.
     valid_df = df.loc[~invalid_mask].copy()
 
     valid_df["ngay"] = (
@@ -54,7 +53,6 @@ def process_orders():
     )
     valid_df["thanh_tien"] = normalized_amounts.loc[~invalid_mask]
 
-    # Dữ liệu bị từ chối.
     reject_df = df.loc[invalid_mask].copy()
 
     def rejection_reason(index):
@@ -80,7 +78,6 @@ def process_orders():
         rejection_reason(index) for index in reject_df.index
     ]
 
-    # In kết quả phân loại.
     rows_valid = len(valid_df)
     rows_rejected = len(reject_df)
 
@@ -90,7 +87,6 @@ def process_orders():
     print(f"Số dòng bị từ chối: {rows_rejected:,}")
     print(f"Tổng sau phân loại: {rows_valid + rows_rejected:,}")
 
-    # Trả dữ liệu cho module quality và load xử lý tiếp.
     return valid_df, reject_df, rows_before
 
 
