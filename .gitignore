@@ -13,6 +13,7 @@ venv/
 
 # Dữ liệu & model lớn
 data/raw/
+data/processed/
 models/*.pkl
 models/*.pt
 
