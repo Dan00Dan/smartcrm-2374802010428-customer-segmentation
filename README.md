@@ -36,7 +36,7 @@ pip install -r requirements.txt
 Chạy pipeline xử lý dữ liệu:
 
 ```powershell
-python .\src\pipeline.py
+python -m src.pipeline
 ```
 
 Pipeline thực hiện các bước:
@@ -70,7 +70,7 @@ Kết quả được lưu tại:
 - `src/load/`: Module lưu dữ liệu đầu ra và báo cáo chất lượng.
 - `src/pipeline.py`: Điểm chạy chính của pipeline.
 - `src/check_env.py`: Kiểm tra môi trường thực thi.
-- `tests/`: Các unit test cho hàm chuẩn hóa dữ liệu.
+- `tests/`: Các unit test cho chuẩn hóa dữ liệu và xử lý đơn hàng.
 - `dashboard/`: Thư mục dự kiến dành cho giao diện hiển thị kết quả phân tích.
 - `requirements.txt`: Danh sách thư viện Python.
 - `.env.example`: Mẫu cấu hình môi trường.
@@ -81,37 +81,43 @@ Kết quả được lưu tại:
 Chạy pipeline bằng lệnh:
 
 ```powershell
-python .\src\pipeline.py
+python -m src.pipeline
 ```
 
-Kết quả xử lý dữ liệu đơn hàng:
+### Kết quả xử lý dữ liệu đơn hàng
+
+Kết quả chạy pipeline gần nhất:
 
 - Số dòng ban đầu: **26.000**.
 - Số dòng hợp lệ: **25.607**.
 - Số dòng bị từ chối: **393**.
-- Tổng sau phân loại: **26.000**.
+- Tổng số dòng sau phân loại: **26.000**.
 
 Trong 393 dòng bị từ chối:
 
 - 279 dòng thiếu số tiền.
 - 114 dòng thiếu ngày.
 
-Các dòng bị từ chối được lưu riêng kèm lý do. Tổng số dòng hợp lệ và bị từ chối bằng số dòng ban đầu, không thất thoát dòng trong quá trình phân loại.
+Các dòng bị từ chối được lưu riêng tại `data/processed/orders_reject.csv`, kèm lý do từ chối. Dữ liệu hợp lệ được lưu tại `data/processed/orders_normalized.csv`.
+
+Tổng số dòng hợp lệ và bị từ chối bằng số dòng ban đầu, bảo đảm không thất thoát dòng trong quá trình phân loại.
 
 Kết quả kiểm tra chất lượng của lần chạy gần nhất:
 
 - Bảo toàn số dòng: `True`.
-- Dòng từ chối có lý do: `True`.
+- Dòng bị từ chối có lý do: `True`.
 
-Chạy unit test bằng lệnh:
+### Kết quả unit test
+
+Chạy kiểm thử bằng lệnh:
 
 ```powershell
 python -m pytest -q
 ```
 
-**Kết quả kiểm thử:** 11/11 unit test đạt yêu cầu, bao gồm các trường hợp chuẩn hóa ngày tháng, số tiền hợp lệ, số tiền theo định dạng Việt Nam, dữ liệu trống và dữ liệu không hợp lệ.
+**Kết quả kiểm thử gần nhất: 12/12 unit test đạt yêu cầu**, bao gồm các trường hợp chuẩn hóa ngày tháng, chuẩn hóa số tiền, dữ liệu trống, dữ liệu không hợp lệ và kiểm thử nghiệp vụ xử lý đơn hàng.
 
-Ảnh minh chứng kết quả chạy pipeline được lưu tại `docs/pipeline-result.png`.
+Ảnh minh chứng kết quả chạy pipeline được lưu tại `docs/pipeline-result.png`. Báo cáo chất lượng dữ liệu được lưu tại `docs/bao-cao-chat-luong.md`.
 
 Chưa kiểm thử đầy đủ chức năng và hiệu năng của toàn hệ thống.
 
@@ -130,7 +136,7 @@ Chưa kiểm thử đầy đủ chức năng và hiệu năng của toàn hệ t
 - [x] Ghi lý do từ chối dữ liệu.
 - [x] Hoàn thiện module kiểm tra chất lượng dữ liệu cơ bản.
 - [x] Lưu báo cáo chất lượng dữ liệu.
-- [x] Bổ sung và chạy 11 unit test cho các hàm chuẩn hóa dữ liệu.
+- [x] Bổ sung và chạy 12 unit test, gồm kiểm thử chuẩn hóa dữ liệu và xử lý đơn hàng.
 - [x] Lưu ảnh minh chứng kết quả chạy pipeline.
 - [ ] Xác nhận cách ghép hồ sơ khách hàng với đơn hàng và quy tắc xác định đơn hàng hợp lệ.
 - [ ] Triển khai tính chỉ số và phân khúc theo QT-12.
