@@ -1,6 +1,8 @@
 
 from extract.read_data import read_csv_data, print_data_profile
 from transform.process_orders import process_orders
+from quality.check_quality import check_quality
+from load.save_results import save_results
 
 
 def main():
@@ -10,7 +12,13 @@ def main():
     print_data_profile(customers, "customers_raw.csv")
     print_data_profile(orders, "orders_2024_2026.csv")
 
-    process_orders()
+    valid_df, reject_df, rows_before = process_orders()
+
+    quality_result = check_quality(
+        valid_df, reject_df, rows_before
+    )
+
+    save_results(valid_df, reject_df, quality_result)
 
 
 if __name__ == "__main__":

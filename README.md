@@ -46,26 +46,28 @@ Pipeline thực hiện các bước:
 3. Chuẩn hóa ngày tháng trong dữ liệu đơn hàng về định dạng `YYYY-MM-DD`.
 4. Chuẩn hóa số tiền, bao gồm số nguyên và định dạng tiền Việt Nam có dấu chấm phân cách hàng nghìn, ví dụ `34.980.500đ`.
 5. Phân loại các dòng có ngày và số tiền hợp lệ; từ chối các dòng thiếu ngày hoặc thiếu số tiền và ghi rõ lý do.
+6. Kiểm tra tính bảo toàn số dòng và xác nhận các dòng bị từ chối có lý do.
+7. Lưu dữ liệu hợp lệ, dữ liệu bị từ chối và báo cáo chất lượng.
 
-Kết quả được lưu trong thư mục `data/processed/`:
+Kết quả được lưu tại:
 
-- `orders_normalized.csv`: các dòng đơn hàng có ngày và số tiền hợp lệ.
-- `orders_reject.csv`: các dòng bị từ chối, kèm lý do.
+- `data/processed/orders_normalized.csv`: các dòng đơn hàng có ngày và số tiền hợp lệ.
+- `data/processed/orders_reject.csv`: các dòng bị từ chối, kèm lý do.
+- `docs/bao-cao-chat-luong.md`: báo cáo kết quả kiểm tra chất lượng.
+- `docs/pipeline-result.png`: ảnh minh chứng kết quả chạy pipeline.
 
-Ảnh minh chứng kết quả chạy pipeline: `docs/pipeline-result.png`.
-
-**Lưu ý:** Pipeline hiện mới thực hiện thống kê dữ liệu, chuẩn hóa ngày tháng và số tiền. Chưa thực hiện ghép hồ sơ khách hàng với đơn hàng hoặc tính phân khúc khách hàng theo QT-12.
+**Lưu ý:** Pipeline hiện mới thực hiện thống kê dữ liệu, chuẩn hóa ngày tháng và số tiền, phân loại dữ liệu theo hai tiêu chí này và kiểm tra chất lượng cơ bản. Chưa thực hiện ghép hồ sơ khách hàng với đơn hàng hoặc tính phân khúc khách hàng theo QT-12.
 
 ## 4. Cấu trúc thư mục
 
-- `docs/`: SRS, đặc tả dữ liệu, sơ đồ thiết kế, wireframe, khai báo sử dụng AI và ảnh minh chứng.
+- `docs/`: SRS, đặc tả dữ liệu, sơ đồ thiết kế, wireframe, khai báo sử dụng AI, báo cáo chất lượng và ảnh minh chứng.
 - `data/raw/`: Dữ liệu CSV đầu vào.
 - `data/processed/`: Dữ liệu sau xử lý và các dòng bị từ chối.
 - `notebooks/`: Notebook khảo sát và phân tích dữ liệu.
 - `src/extract/`: Module đọc dữ liệu đầu vào.
 - `src/transform/`: Module chuẩn hóa và chuyển đổi dữ liệu.
-- `src/quality/`: Module dành cho kiểm tra chất lượng dữ liệu.
-- `src/load/`: Module dành cho bước lưu hoặc nạp dữ liệu.
+- `src/quality/`: Module kiểm tra chất lượng dữ liệu.
+- `src/load/`: Module lưu dữ liệu đầu ra và báo cáo chất lượng.
 - `src/pipeline.py`: Điểm chạy chính của pipeline.
 - `src/check_env.py`: Kiểm tra môi trường thực thi.
 - `tests/`: Các unit test cho hàm chuẩn hóa dữ liệu.
@@ -76,7 +78,7 @@ Kết quả được lưu trong thư mục `data/processed/`:
 
 ## 5. Kiểm thử
 
-Đã chạy pipeline bằng lệnh:
+Chạy pipeline bằng lệnh:
 
 ```powershell
 python .\src\pipeline.py
@@ -96,10 +98,15 @@ Trong 393 dòng bị từ chối:
 
 Các dòng bị từ chối được lưu riêng kèm lý do. Tổng số dòng hợp lệ và bị từ chối bằng số dòng ban đầu, không thất thoát dòng trong quá trình phân loại.
 
+Kết quả kiểm tra chất lượng của lần chạy gần nhất:
+
+- Bảo toàn số dòng: `True`.
+- Dòng từ chối có lý do: `True`.
+
 Chạy unit test bằng lệnh:
 
 ```powershell
-python -m unittest discover -s tests -v
+python -m pytest -q
 ```
 
 **Kết quả kiểm thử:** 11/11 unit test đạt yêu cầu, bao gồm các trường hợp chuẩn hóa ngày tháng, số tiền hợp lệ, số tiền theo định dạng Việt Nam, dữ liệu trống và dữ liệu không hợp lệ.
@@ -121,13 +128,14 @@ Chưa kiểm thử đầy đủ chức năng và hiệu năng của toàn hệ t
 - [x] Chuẩn hóa số tiền theo định dạng dữ liệu đầu vào.
 - [x] Ghi dữ liệu hợp lệ và dữ liệu bị từ chối vào các file riêng.
 - [x] Ghi lý do từ chối dữ liệu.
+- [x] Hoàn thiện module kiểm tra chất lượng dữ liệu cơ bản.
+- [x] Lưu báo cáo chất lượng dữ liệu.
 - [x] Bổ sung và chạy 11 unit test cho các hàm chuẩn hóa dữ liệu.
 - [x] Lưu ảnh minh chứng kết quả chạy pipeline.
-- [ ] Hoàn thiện module kiểm tra chất lượng dữ liệu.
 - [ ] Xác nhận cách ghép hồ sơ khách hàng với đơn hàng và quy tắc xác định đơn hàng hợp lệ.
 - [ ] Triển khai tính chỉ số và phân khúc theo QT-12.
 - [ ] Xây dựng dashboard.
-- [ ] Kiểm thử chức năng và hiệu năng.
+- [ ] Kiểm thử chức năng và hiệu năng toàn hệ thống.
 
 ## 7. Tài liệu tham khảo trong repository
 
@@ -139,3 +147,4 @@ Chưa kiểm thử đầy đủ chức năng và hiệu năng của toàn hệ t
 - `docs/wireframe.png`: Hình ảnh thiết kế giao diện.
 - `docs/ai-disclosure.md`: Khai báo sử dụng công cụ AI.
 - `docs/pipeline-result.png`: Ảnh minh chứng chạy pipeline.
+- `docs/bao-cao-chat-luong.md`: Báo cáo kiểm tra chất lượng dữ liệu.

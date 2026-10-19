@@ -9,13 +9,30 @@ from transform.normalize_amount import normalize_amount
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RAW_FILE = PROJECT_ROOT / "data" / "raw" / "orders_2024_2026.csv"
-OUTPUT_DIR = PROJECT_ROOT / "data" / "processed"
 
 
 def process_orders():
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    """Chuẩn hóa đơn hàng và tách dữ liệu hợp lệ, dữ liệu bị từ chối."""
 
-    df = pd.read_csv(RAW_FILE, dtype=str, keep_default_na=False)
+    if not RAW_FILE.exists():
+        raise FileNotFoundError(
+            f"Không tìm thấy file dữ liệu đơn hàng: {RAW_FILE}"
+        )
+
+    df = pd.read_csv(
+        RAW_FILE,
+        dtype=str,
+        keep_default_na=False,
+    )
+
+    required_columns = {"ngay", "thanh_tien"}
+    missing_columns = required_columns - set(df.columns)
+
+    if missing_columns:
+        raise ValueError(
+            f"File đơn hàng thiếu cột bắt buộc: {', '.join(sorted(missing_columns))}"
+        )
+
     rows_before = len(df)
 
     original_dates = df["ngay"].copy()
@@ -24,17 +41,20 @@ def process_orders():
     normalized_dates = original_dates.map(normalize_date)
     normalized_amounts = original_amounts.map(normalize_amount)
 
-    # Ngày hoặc số tiền không hợp lệ đều bị từ chối.
+    # Từ chối dòng có ngày hoặc số tiền không hợp lệ.
     invalid_date = normalized_dates.isna()
     invalid_amount = normalized_amounts.isna()
     invalid_mask = invalid_date | invalid_amount
 
+    # Dữ liệu hợp lệ.
     valid_df = df.loc[~invalid_mask].copy()
-    valid_df["ngay"] = normalized_dates.loc[~invalid_mask].dt.strftime(
-        "%Y-%m-%d"
+
+    valid_df["ngay"] = (
+        normalized_dates.loc[~invalid_mask].dt.strftime("%Y-%m-%d")
     )
     valid_df["thanh_tien"] = normalized_amounts.loc[~invalid_mask]
 
+    # Dữ liệu bị từ chối.
     reject_df = df.loc[invalid_mask].copy()
 
     def rejection_reason(index):
@@ -42,19 +62,17 @@ def process_orders():
 
         if invalid_date.loc[index]:
             value = original_dates.loc[index]
-            reasons.append(
-                "Ngày bị trống"
-                if not str(value).strip()
-                else f"Không chuyển đổi được ngày: {value}"
-            )
+            if not str(value).strip():
+                reasons.append("Ngày bị trống")
+            else:
+                reasons.append(f"Không chuyển đổi được ngày: {value}")
 
         if invalid_amount.loc[index]:
             value = original_amounts.loc[index]
-            reasons.append(
-                "Số tiền bị trống"
-                if not str(value).strip()
-                else f"Số tiền không hợp lệ: {value}"
-            )
+            if not str(value).strip():
+                reasons.append("Số tiền bị trống")
+            else:
+                reasons.append(f"Số tiền không hợp lệ: {value}")
 
         return "; ".join(reasons)
 
@@ -62,20 +80,19 @@ def process_orders():
         rejection_reason(index) for index in reject_df.index
     ]
 
-    valid_path = OUTPUT_DIR / "orders_normalized.csv"
-    reject_path = OUTPUT_DIR / "orders_reject.csv"
+    # In kết quả phân loại.
+    rows_valid = len(valid_df)
+    rows_rejected = len(reject_df)
 
-    valid_df.to_csv(valid_path, index=False, encoding="utf-8-sig")
-    reject_df.to_csv(reject_path, index=False, encoding="utf-8-sig")
-
-    print("\n===== KẾT QUẢ XỬ LÝ ĐƠN HÀNG =====")
+    print("\n===== KẾT QUẢ PHÂN LOẠI ĐƠN HÀNG =====")
     print(f"Số dòng ban đầu: {rows_before:,}")
-    print(f"Số dòng hợp lệ: {len(valid_df):,}")
-    print(f"Số dòng bị từ chối: {len(reject_df):,}")
-    print(f"Tổng sau phân loại: {len(valid_df) + len(reject_df):,}")
-    print(f"\nFile dữ liệu chuẩn hóa: {valid_path}")
-    print(f"File reject: {reject_path}")
+    print(f"Số dòng hợp lệ: {rows_valid:,}")
+    print(f"Số dòng bị từ chối: {rows_rejected:,}")
+    print(f"Tổng sau phân loại: {rows_valid + rows_rejected:,}")
+
+    # Trả dữ liệu cho module quality và load xử lý tiếp.
+    return valid_df, reject_df, rows_before
 
 
 if __name__ == "__main__":
-    process_orders()
+    valid_df, reject_df, rows_before = process_orders()
