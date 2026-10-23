@@ -1,7 +1,7 @@
 # Hệ thống phân khúc khách hàng theo dữ liệu mua hàng
 
-**Sinh viên:** Trần Thị Như Quỳnh – 2374802010428 – Track Data Analyst
-**Học phần:** Chuyên đề Tốt nghiệp 1, HK1 2026–2027
+**Sinh viên:** Trần Thị Như Quỳnh – 2374802010428 – Track Data Analyst  
+**Học phần:** Chuyên đề Tốt nghiệp 1, HK1 2026–2027  
 **Luồng nghiệp vụ:** L1 – Hồ sơ khách hàng và phân khúc
 
 ## 1. Mục tiêu
@@ -34,6 +34,8 @@ Mở PowerShell tại thư mục gốc của repository.
 py -m venv .venv
 ```
 
+Nếu môi trường `.venv` đã tồn tại thì không cần tạo lại.
+
 ### Bước 2. Kích hoạt môi trường ảo
 
 ```powershell
@@ -48,14 +50,16 @@ Nếu môi trường `.venv` đã được kích hoạt thì bỏ qua bước n�
 python -m pip install -r requirements.txt
 ```
 
-### Bước 4. Chuẩn bị dữ liệu
+### Bước 4. Chuẩn bị dữ liệu đầu vào
 
-Đặt dữ liệu đầu vào đúng cấu trúc dự án:
+Dự án sử dụng hai tệp dữ liệu:
 
 - `data/raw/customers_raw.csv`
 - `data/raw/orders_2024_2026.csv`
 
-Không đưa dữ liệu khách hàng có thông tin cá nhân lên repository công khai nếu chưa được phép.
+Hai tệp dữ liệu đầu vào không được đưa lên repository do có thể chứa thông tin cá nhân. Khi clone dự án sang máy hoặc thư mục mới, cần tự chuẩn bị dữ liệu được phép sử dụng và đặt đúng tên, đúng vị trí nêu trên.
+
+Nếu chưa có dữ liệu đầu vào, hãy chuẩn bị dữ liệu trước khi chạy pipeline và ETL. Không tự ý tải dữ liệu khách hàng lên repository công khai.
 
 ### Bước 5. Chạy pipeline xử lý dữ liệu
 
@@ -63,11 +67,11 @@ Không đưa dữ liệu khách hàng có thông tin cá nhân lên repository c
 python -m src.pipeline
 ```
 
-Pipeline đọc dữ liệu, thống kê chất lượng, chuẩn hóa ngày tháng và số tiền, phân loại dữ liệu hợp lệ hoặc bị từ chối, sau đó lưu kết quả xử lý theo cấu hình dự án.
+Pipeline đọc dữ liệu, thống kê chất lượng, chuẩn hóa ngày tháng và số tiền, phân loại dữ liệu hợp lệ hoặc bị từ chối, sau đó lưu kết quả theo cấu hình dự án.
 
 Các kết quả chính:
 
-- `data/processed/orders_normalized.csv`: dữ liệu đơn hàng hợp lệ theo các tiêu chí xử lý hiện tại.
+- `data/processed/orders_normalized.csv`: dữ liệu đơn hàng sau xử lý theo các tiêu chí hiện tại.
 - `data/processed/orders_reject.csv`: dữ liệu bị từ chối kèm lý do.
 - `docs/bao-cao-chat-luong.md`: báo cáo chất lượng dữ liệu.
 
@@ -92,7 +96,9 @@ Báo cáo nạp kho được lưu tại `docs/bao-cao-nap-kho.md`.
 python -m streamlit run app.py
 ```
 
-Mở địa chỉ `http://localhost:8501` trên trình duyệt.
+Mở địa chỉ sau trên trình duyệt:
+
+`http://localhost:8501`
 
 Dashboard hỗ trợ lọc tháng, xem thống kê tổng quan, theo dõi số đơn và tổng tiền ghi nhận theo tháng, xem chi tiết đơn hàng và cảnh báo chất lượng dữ liệu.
 
@@ -102,7 +108,7 @@ Dashboard hỗ trợ lọc tháng, xem thống kê tổng quan, theo dõi số �
 python -m pytest -q
 ```
 
-Kết quả kiểm thử gần nhất trong quá trình phát triển: **16 bài kiểm thử đạt yêu cầu**. Cần chạy lại lệnh trên để xác nhận kết quả sau các thay đổi tiếp theo.
+Kết quả kiểm thử gần nhất trong quá trình phát triển là **16 bài kiểm thử đạt yêu cầu**. Cần chạy lại lệnh trên để xác nhận kết quả tại thời điểm sử dụng.
 
 ## 5. Quy trình xử lý dữ liệu
 
@@ -160,3 +166,4 @@ Vì vậy:
 - `docs/bao-cao-chat-luong.md`: báo cáo chất lượng dữ liệu.
 - `docs/bao-cao-nap-kho.md`: báo cáo nạp kho.
 - `docs/pipeline-result.png`: ảnh minh chứng chạy pipeline.
+- `docs/dashboard-01.png.png` đến `docs/dashboard-04.png.png`: ảnh minh chứng dashboard.
