@@ -1,4 +1,4 @@
-# Bí mật - KHÔNG BAO GIỜ commit
+# BĂ­ máº­t - KHĂ”NG BAO GIá»œ commit
 .env
 
 # Dependencies & build
@@ -11,7 +11,7 @@ __pycache__/
 .venv/
 venv/
 
-# Dữ liệu & model lớn
+# Dá»¯ liá»‡u & model lá»›n
 data/raw/
 data/processed/
 models/*.pkl
@@ -23,3 +23,5 @@ models/*.pt
 .DS_Store
 Thumbs.db
 **/.ipynb_checkpoints/
+# Du lieu kho sinh ra khi chay ETL
+data/warehouse/

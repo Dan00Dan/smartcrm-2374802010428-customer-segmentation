@@ -1,156 +1,162 @@
 # Hệ thống phân khúc khách hàng theo dữ liệu mua hàng
 
-**Sinh viên:** Trần Thị Như Quỳnh – 2374802010428 – Track DA  
-**Học phần:** Chuyên đề Tốt nghiệp 1, HK1 2026–2027  
-**Luồng nghiệp vụ:** L1 – Hồ sơ khách hàng & phân khúc
+**Sinh viên:** Trần Thị Như Quỳnh – 2374802010428 – Track Data Analyst
+**Học phần:** Chuyên đề Tốt nghiệp 1, HK1 2026–2027
+**Luồng nghiệp vụ:** L1 – Hồ sơ khách hàng và phân khúc
 
 ## 1. Mục tiêu
 
-Hỗ trợ nhân viên Marketing phân khúc khách hàng thành VIP, Thường xuyên, Mới và Ngủ đông theo quy tắc QT-12.
+Xây dựng quy trình xử lý dữ liệu mua hàng, kiểm tra chất lượng, nạp dữ liệu vào kho và cung cấp dashboard để nhân viên Marketing theo dõi dữ liệu theo tháng.
 
-Người phân tích dữ liệu kiểm tra chất lượng dữ liệu đầu vào. Hệ thống định hướng tính toán chỉ số mua hàng, hiển thị phân khúc, hỗ trợ lọc, thống kê và xuất kết quả.
+Phân khúc khách hàng dự kiến tuân theo quy tắc QT-12: VIP, Thường xuyên, Mới và Ngủ đông. Kết quả phân khúc chỉ được công bố sau khi xác minh quy tắc liên kết khách hàng, trạng thái đơn hàng hợp lệ và các điều kiện nghiệp vụ liên quan.
 
-## 2. Yêu cầu môi trường
+## 2. Công nghệ sử dụng
 
-- Python 3.11 trở lên.
-- Sử dụng môi trường ảo `.venv`.
-- Thư viện xử lý dữ liệu: Pandas; các thư viện khác xem trong `requirements.txt`.
-- Cơ sở dữ liệu dự kiến: PostgreSQL.
-- Biến môi trường: tham khảo `.env.example`.
-- Mở các sơ đồ `.drawio` bằng diagrams.net.
+- Python
+- Pandas
+- Streamlit
+- Pytest
+- CSV làm định dạng dữ liệu đầu vào và kho dữ liệu trong phạm vi hiện tại.
 
-## 3. Hướng dẫn chạy
+## 3. Yêu cầu môi trường
 
-Mở PowerShell tại thư mục gốc của repository và kích hoạt môi trường ảo:
+- Python tương thích với các thư viện trong `requirements.txt`.
+- Git để tải mã nguồn.
+- Hai bộ dữ liệu đầu vào theo cấu trúc dự án.
+
+## 4. Cài đặt và chạy dự án
+
+Mở PowerShell tại thư mục gốc của repository.
+
+### Bước 1. Tạo môi trường ảo
+
+```powershell
+py -m venv .venv
+```
+
+### Bước 2. Kích hoạt môi trường ảo
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Cài đặt thư viện nếu môi trường chưa có đủ:
+Nếu môi trường `.venv` đã được kích hoạt thì bỏ qua bước này.
+
+### Bước 3. Cài đặt thư viện
 
 ```powershell
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-Chạy pipeline xử lý dữ liệu:
+### Bước 4. Chuẩn bị dữ liệu
 
-```powershell
-python -m src.pipeline
-```
+Đặt dữ liệu đầu vào đúng cấu trúc dự án:
 
-Pipeline thực hiện các bước:
+- `data/raw/customers_raw.csv`
+- `data/raw/orders_2024_2026.csv`
 
-1. Đọc hai file `customers_raw.csv` và `orders_2024_2026.csv` trong thư mục `data/raw/`.
-2. In số dòng, số cột và tỷ lệ ô trống của từng cột.
-3. Chuẩn hóa ngày tháng trong dữ liệu đơn hàng về định dạng `YYYY-MM-DD`.
-4. Chuẩn hóa số tiền, bao gồm số nguyên và định dạng tiền Việt Nam có dấu chấm phân cách hàng nghìn, ví dụ `34.980.500đ`.
-5. Phân loại các dòng có ngày và số tiền hợp lệ; từ chối các dòng thiếu ngày hoặc thiếu số tiền và ghi rõ lý do.
-6. Kiểm tra tính bảo toàn số dòng và xác nhận các dòng bị từ chối có lý do.
-7. Lưu dữ liệu hợp lệ, dữ liệu bị từ chối và báo cáo chất lượng.
+Không đưa dữ liệu khách hàng có thông tin cá nhân lên repository công khai nếu chưa được phép.
 
-Kết quả được lưu tại:
-
-- `data/processed/orders_normalized.csv`: các dòng đơn hàng có ngày và số tiền hợp lệ.
-- `data/processed/orders_reject.csv`: các dòng bị từ chối, kèm lý do.
-- `docs/bao-cao-chat-luong.md`: báo cáo kết quả kiểm tra chất lượng.
-- `docs/pipeline-result.png`: ảnh minh chứng kết quả chạy pipeline.
-
-**Lưu ý:** Pipeline hiện mới thực hiện thống kê dữ liệu, chuẩn hóa ngày tháng và số tiền, phân loại dữ liệu theo hai tiêu chí này và kiểm tra chất lượng cơ bản. Chưa thực hiện ghép hồ sơ khách hàng với đơn hàng hoặc tính phân khúc khách hàng theo QT-12.
-
-## 4. Cấu trúc thư mục
-
-- `docs/`: SRS, đặc tả dữ liệu, sơ đồ thiết kế, wireframe, khai báo sử dụng AI, báo cáo chất lượng và ảnh minh chứng.
-- `data/raw/`: Dữ liệu CSV đầu vào.
-- `data/processed/`: Dữ liệu sau xử lý và các dòng bị từ chối.
-- `notebooks/`: Notebook khảo sát và phân tích dữ liệu.
-- `src/extract/`: Module đọc dữ liệu đầu vào.
-- `src/transform/`: Module chuẩn hóa và chuyển đổi dữ liệu.
-- `src/quality/`: Module kiểm tra chất lượng dữ liệu.
-- `src/load/`: Module lưu dữ liệu đầu ra và báo cáo chất lượng.
-- `src/pipeline.py`: Điểm chạy chính của pipeline.
-- `src/check_env.py`: Kiểm tra môi trường thực thi.
-- `tests/`: Các unit test cho chuẩn hóa dữ liệu và xử lý đơn hàng.
-- `dashboard/`: Thư mục dự kiến dành cho giao diện hiển thị kết quả phân tích.
-- `requirements.txt`: Danh sách thư viện Python.
-- `.env.example`: Mẫu cấu hình môi trường.
-- `.gitignore`: Danh sách file và thư mục không đưa lên GitHub.
-
-## 5. Kiểm thử
-
-Chạy pipeline bằng lệnh:
+### Bước 5. Chạy pipeline xử lý dữ liệu
 
 ```powershell
 python -m src.pipeline
 ```
 
-### Kết quả xử lý dữ liệu đơn hàng
+Pipeline đọc dữ liệu, thống kê chất lượng, chuẩn hóa ngày tháng và số tiền, phân loại dữ liệu hợp lệ hoặc bị từ chối, sau đó lưu kết quả xử lý theo cấu hình dự án.
 
-Kết quả chạy pipeline gần nhất:
+Các kết quả chính:
 
-- Số dòng ban đầu: **26.000**.
-- Số dòng hợp lệ: **25.607**.
-- Số dòng bị từ chối: **393**.
-- Tổng số dòng sau phân loại: **26.000**.
+- `data/processed/orders_normalized.csv`: dữ liệu đơn hàng hợp lệ theo các tiêu chí xử lý hiện tại.
+- `data/processed/orders_reject.csv`: dữ liệu bị từ chối kèm lý do.
+- `docs/bao-cao-chat-luong.md`: báo cáo chất lượng dữ liệu.
 
-Trong 393 dòng bị từ chối:
+### Bước 6. Nạp dữ liệu vào kho
 
-- 279 dòng thiếu số tiền.
-- 114 dòng thiếu ngày.
+```powershell
+python -m src.etl.load_warehouse
+```
 
-Các dòng bị từ chối được lưu riêng tại `data/processed/orders_reject.csv`, kèm lý do từ chối. Dữ liệu hợp lệ được lưu tại `data/processed/orders_normalized.csv`.
+Các bảng kho được tạo trong `data/warehouse/`:
 
-Tổng số dòng hợp lệ và bị từ chối bằng số dòng ban đầu, bảo đảm không thất thoát dòng trong quá trình phân loại.
+- `dim_customer.csv`: dữ liệu chiều khách hàng.
+- `dim_period.csv`: dữ liệu chiều thời gian.
+- `fact_order.csv`: dữ liệu đơn hàng.
+- `data_quality_issues.csv`: các vấn đề chất lượng dữ liệu.
 
-Kết quả kiểm tra chất lượng của lần chạy gần nhất:
+Báo cáo nạp kho được lưu tại `docs/bao-cao-nap-kho.md`.
 
-- Bảo toàn số dòng: `True`.
-- Dòng bị từ chối có lý do: `True`.
+### Bước 7. Chạy dashboard
 
-### Kết quả unit test
+```powershell
+python -m streamlit run app.py
+```
 
-Chạy kiểm thử bằng lệnh:
+Mở địa chỉ `http://localhost:8501` trên trình duyệt.
+
+Dashboard hỗ trợ lọc tháng, xem thống kê tổng quan, theo dõi số đơn và tổng tiền ghi nhận theo tháng, xem chi tiết đơn hàng và cảnh báo chất lượng dữ liệu.
+
+### Bước 8. Chạy kiểm thử
 
 ```powershell
 python -m pytest -q
 ```
 
-**Kết quả kiểm thử gần nhất: 12/12 unit test đạt yêu cầu**, bao gồm các trường hợp chuẩn hóa ngày tháng, chuẩn hóa số tiền, dữ liệu trống, dữ liệu không hợp lệ và kiểm thử nghiệp vụ xử lý đơn hàng.
+Kết quả kiểm thử gần nhất trong quá trình phát triển: **16 bài kiểm thử đạt yêu cầu**. Cần chạy lại lệnh trên để xác nhận kết quả sau các thay đổi tiếp theo.
 
-Ảnh minh chứng kết quả chạy pipeline được lưu tại `docs/pipeline-result.png`. Báo cáo chất lượng dữ liệu được lưu tại `docs/bao-cao-chat-luong.md`.
+## 5. Quy trình xử lý dữ liệu
 
-Chưa kiểm thử đầy đủ chức năng và hiệu năng của toàn hệ thống.
+1. Đọc và thống kê dữ liệu đầu vào.
+2. Chuẩn hóa ngày tháng và số tiền.
+3. Phân loại dữ liệu hợp lệ và dữ liệu bị từ chối.
+4. Kiểm tra chất lượng và tính bảo toàn số dòng.
+5. Nạp dữ liệu vào các bảng kho dạng CSV.
+6. Kiểm tra khóa nghiệp vụ và ghi nhận bản ghi chưa xác định được khách hàng.
+7. Hiển thị số liệu tổng hợp và cảnh báo trên dashboard.
 
-## 6. Trạng thái hiện tại
+## 6. Cấu trúc thư mục chính
 
-- [x] Khởi tạo repository và môi trường ảo.
-- [x] Hoàn thành phân tích và thiết kế BT1.
-- [x] Đưa các sơ đồ, wireframe và khai báo sử dụng AI lên repository.
-- [x] Đồng bộ SRS và đặc tả dữ liệu với báo cáo BT1.
-- [x] Tạo cấu trúc module ETL ban đầu cho Track DA.
-- [x] Đọc dữ liệu CSV bằng Pandas.
-- [x] In số dòng, số cột và tỷ lệ ô trống theo từng cột.
-- [x] Chuẩn hóa ngày tháng của dữ liệu đơn hàng.
-- [x] Chuẩn hóa số tiền theo định dạng dữ liệu đầu vào.
-- [x] Ghi dữ liệu hợp lệ và dữ liệu bị từ chối vào các file riêng.
-- [x] Ghi lý do từ chối dữ liệu.
-- [x] Hoàn thiện module kiểm tra chất lượng dữ liệu cơ bản.
-- [x] Lưu báo cáo chất lượng dữ liệu.
-- [x] Bổ sung và chạy 12 unit test, gồm kiểm thử chuẩn hóa dữ liệu và xử lý đơn hàng.
-- [x] Lưu ảnh minh chứng kết quả chạy pipeline.
-- [ ] Xác nhận cách ghép hồ sơ khách hàng với đơn hàng và quy tắc xác định đơn hàng hợp lệ.
-- [ ] Triển khai tính chỉ số và phân khúc theo QT-12.
-- [ ] Xây dựng dashboard.
-- [ ] Kiểm thử chức năng và hiệu năng toàn hệ thống.
+- `app.py`: giao diện dashboard Streamlit.
+- `data/raw/`: dữ liệu CSV đầu vào.
+- `data/processed/`: dữ liệu sau xử lý và dữ liệu bị từ chối.
+- `data/warehouse/`: các bảng kho dữ liệu được sinh ra khi chạy ETL.
+- `src/extract/`: module đọc dữ liệu.
+- `src/transform/`: module chuẩn hóa dữ liệu.
+- `src/quality/`: module kiểm tra chất lượng.
+- `src/load/`: module lưu dữ liệu và báo cáo.
+- `src/etl/load_warehouse.py`: module nạp dữ liệu vào kho.
+- `tests/`: các bài kiểm thử tự động.
+- `docs/`: đặc tả, sơ đồ, báo cáo và ảnh minh chứng.
+- `requirements.txt`: danh sách thư viện.
+- `.gitignore`: danh sách file và thư mục không đưa lên GitHub.
 
-## 7. Tài liệu tham khảo trong repository
+## 7. Giới hạn dữ liệu hiện tại
 
-- `docs/srs.md`: Đặc tả yêu cầu phần mềm.
-- `docs/data-requirements.md`: Yêu cầu dữ liệu.
-- `docs/architecture.drawio`: Sơ đồ kiến trúc.
-- `docs/erd.drawio`: Sơ đồ thực thể – liên kết.
-- `docs/usecase.drawio`: Sơ đồ Use Case.
-- `docs/wireframe.png`: Hình ảnh thiết kế giao diện.
-- `docs/ai-disclosure.md`: Khai báo sử dụng công cụ AI.
-- `docs/pipeline-result.png`: Ảnh minh chứng chạy pipeline.
-- `docs/bao-cao-chat-luong.md`: Báo cáo kiểm tra chất lượng dữ liệu.
+Nguồn dữ liệu hiện tại chưa xác minh đầy đủ khóa liên kết giữa hồ sơ khách hàng và đơn hàng; đồng thời chưa có thông tin đủ tin cậy để xác định chắc chắn trạng thái đơn hàng hoàn tất.
+
+Vì vậy:
+
+- Đơn chưa xác định được khách hàng được gắn khóa kỹ thuật `UNKNOWN`.
+- Trạng thái đơn hàng được ghi nhận là `UNKNOWN` khi nguồn chưa cung cấp thông tin xác thực.
+- Các biểu đồ chỉ phản ánh bản ghi và số tiền được ghi nhận trong kho; không khẳng định tất cả đơn là đơn hoàn tất hoặc số tiền là doanh thu hợp lệ.
+- Kết quả phân khúc khách hàng chưa được công bố cho đến khi các điều kiện dữ liệu và nghiệp vụ được xác minh.
+
+## 8. Trạng thái công việc
+
+- [x] Xây dựng pipeline xử lý và kiểm tra chất lượng dữ liệu.
+- [x] Bổ sung kiểm thử tự động cho pipeline.
+- [x] Xây dựng module nạp dữ liệu vào kho CSV.
+- [x] Bổ sung kiểm thử cho module nạp kho.
+- [x] Xây dựng dashboard có bộ lọc tháng, thống kê tổng quan và biểu đồ.
+- [x] Bổ sung cảnh báo về dữ liệu chưa xác định và trạng thái đơn hàng.
+- [ ] Xác minh quy tắc liên kết khách hàng và trạng thái đơn hoàn tất.
+- [ ] Triển khai và xác minh kết quả phân khúc theo QT-12.
+- [ ] Kiểm thử trên môi trường độc lập theo hướng dẫn README.
+
+## 9. Tài liệu liên quan
+
+- `docs/srs.md`: đặc tả yêu cầu phần mềm.
+- `docs/data-requirements.md`: yêu cầu dữ liệu.
+- `docs/bao-cao-chat-luong.md`: báo cáo chất lượng dữ liệu.
+- `docs/bao-cao-nap-kho.md`: báo cáo nạp kho.
+- `docs/pipeline-result.png`: ảnh minh chứng chạy pipeline.
