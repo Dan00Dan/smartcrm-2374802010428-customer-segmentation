@@ -195,6 +195,8 @@ def load_warehouse(root=None):
     # Chuyển ngày và số tiền sang kiểu dữ liệu phù hợp.
     orders["order_date"] = pd.to_datetime(
         orders["ngay"],
+        format="mixed",
+        dayfirst=True,
         errors="coerce",
     )
 
