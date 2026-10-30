@@ -167,3 +167,22 @@ Vì vậy:
 - `docs/bao-cao-nap-kho.md`: báo cáo nạp kho.
 - `docs/pipeline-result.png`: ảnh minh chứng chạy pipeline.
 - `docs/dashboard-01.png.png` đến `docs/dashboard-04.png.png`: ảnh minh chứng dashboard.
+## 10. Chạy pipeline tổng
+
+Sau khi chuẩn bị dữ liệu đầu vào và kích hoạt môi trường ảo, chạy lệnh:
+
+```powershell
+python run_pipeline.py
+```
+
+Lệnh này lần lượt thực hiện:
+1. Xử lý và kiểm tra chất lượng dữ liệu.
+2. Nạp dữ liệu vào kho.
+
+Nếu một bước thất bại, chương trình sẽ dừng và trả về mã lỗi của bước đó.
+
+## 11. Bug Log và công khai sử dụng AI
+
+- `docs/bug-log.md`: ghi nhận các vấn đề dữ liệu và cách xử lý.
+- `docs/ai-disclosure.md`: khai báo việc sử dụng công cụ AI trong quá trình thực hiện dự án.
+- `docs/thay-doi-thiet-ke.md`: ghi nhận các thay đổi thiết kế.
