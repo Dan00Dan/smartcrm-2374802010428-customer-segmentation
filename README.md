@@ -8,7 +8,7 @@
 
 Xây dựng quy trình xử lý dữ liệu mua hàng, kiểm tra chất lượng, nạp dữ liệu vào kho và cung cấp dashboard để nhân viên Marketing theo dõi dữ liệu theo tháng.
 
-Phân khúc khách hàng dự kiến tuân theo quy tắc QT-12: VIP, Thường xuyên, Mới và Ngủ đông. Kết quả phân khúc chỉ được công bố sau khi xác minh quy tắc liên kết khách hàng, trạng thái đơn hàng hợp lệ và các điều kiện nghiệp vụ liên quan.
+Phân khúc khách hàng dự kiến tuân theo quy tắc QT-12 gồm: VIP, Thường xuyên, Mới và Ngủ đông. Kết quả phân khúc chỉ được công bố sau khi xác minh quy tắc liên kết khách hàng, trạng thái đơn hàng hợp lệ và các điều kiện nghiệp vụ liên quan.
 
 ## 2. Công nghệ sử dụng
 
@@ -16,13 +16,14 @@ Phân khúc khách hàng dự kiến tuân theo quy tắc QT-12: VIP, Thường 
 - Pandas
 - Streamlit
 - Pytest
-- CSV làm định dạng dữ liệu đầu vào và kho dữ liệu trong phạm vi hiện tại.
+- CSV làm định dạng dữ liệu đầu vào, dữ liệu sau xử lý và kho dữ liệu trong phạm vi hiện tại.
 
 ## 3. Yêu cầu môi trường
 
 - Python tương thích với các thư viện trong `requirements.txt`.
 - Git để tải mã nguồn.
 - Hai bộ dữ liệu đầu vào theo cấu trúc dự án.
+- PowerShell hoặc terminal tương đương để thực thi các lệnh.
 
 ## 4. Cài đặt và chạy dự án
 
@@ -102,13 +103,17 @@ Mở địa chỉ sau trên trình duyệt:
 
 Dashboard hỗ trợ lọc tháng, xem thống kê tổng quan, theo dõi số đơn và tổng tiền ghi nhận theo tháng, xem chi tiết đơn hàng và cảnh báo chất lượng dữ liệu.
 
+Các chỉ số hiển thị phải được diễn giải theo giới hạn của nguồn dữ liệu. Không mặc định coi tất cả đơn hàng đã nạp là đơn hoàn tất hoặc toàn bộ số tiền ghi nhận là doanh thu hợp lệ.
+
 ### Bước 8. Chạy kiểm thử
 
 ```powershell
-python -m pytest -q
+py -m pytest -v
 ```
 
-Kết quả kiểm thử gần nhất trong quá trình phát triển là **16 bài kiểm thử đạt yêu cầu**. Cần chạy lại lệnh trên để xác nhận kết quả tại thời điểm sử dụng.
+Kết quả kiểm thử gần nhất được ghi nhận trong quá trình phát triển là **20 bài kiểm thử đạt yêu cầu**.
+
+Khi sử dụng hoặc đánh giá dự án, cần chạy lại lệnh kiểm thử để xác nhận trạng thái hiện tại của mã nguồn.
 
 ## 5. Quy trình xử lý dữ liệu
 
@@ -123,6 +128,7 @@ Kết quả kiểm thử gần nhất trong quá trình phát triển là **16 b
 ## 6. Cấu trúc thư mục chính
 
 - `app.py`: giao diện dashboard Streamlit.
+- `run_pipeline.py`: điểm chạy pipeline tổng.
 - `data/raw/`: dữ liệu CSV đầu vào.
 - `data/processed/`: dữ liệu sau xử lý và dữ liệu bị từ chối.
 - `data/warehouse/`: các bảng kho dữ liệu được sinh ra khi chạy ETL.
@@ -143,35 +149,42 @@ Nguồn dữ liệu hiện tại chưa xác minh đầy đủ khóa liên kết 
 Vì vậy:
 
 - Đơn chưa xác định được khách hàng được gắn khóa kỹ thuật `UNKNOWN`.
-- Trạng thái đơn hàng được ghi nhận là `UNKNOWN` khi nguồn chưa cung cấp thông tin xác thực.
+- Trạng thái hoàn tất của đơn hàng chưa được xác minh từ nguồn dữ liệu.
+- Pipeline gần nhất ghi nhận 10.808 đơn hàng chưa xác định được khách hàng. Con số này cần được đối chiếu với báo cáo nạp kho của lần chạy tương ứng.
 - Các biểu đồ chỉ phản ánh bản ghi và số tiền được ghi nhận trong kho; không khẳng định tất cả đơn là đơn hoàn tất hoặc số tiền là doanh thu hợp lệ.
 - Kết quả phân khúc khách hàng chưa được công bố cho đến khi các điều kiện dữ liệu và nghiệp vụ được xác minh.
 
 ## 8. Trạng thái công việc
 
-### 8.1. Công việc đã hoàn thành
+### 8.1. Công việc đã thực hiện
 
 - [x] Xây dựng pipeline xử lý và kiểm tra chất lượng dữ liệu.
 - [x] Bổ sung kiểm thử tự động cho pipeline.
 - [x] Xây dựng module nạp dữ liệu vào kho CSV.
 - [x] Bổ sung kiểm thử cho module nạp kho.
 - [x] Xây dựng dashboard có bộ lọc tháng, thống kê tổng quan và biểu đồ.
-- [x] Bổ sung cảnh báo về dữ liệu chưa xác định và trạng thái đơn hàng.
+- [x] Bổ sung cảnh báo về dữ liệu chưa xác định và giới hạn trạng thái đơn hàng.
 - [x] Cố định phiên bản thư viện trong `requirements.txt`.
 - [x] Bổ sung hướng dẫn cài đặt, chạy chương trình và kiểm thử trong README.
-- [x] Chạy kiểm thử tự động với kết quả gần nhất là 16 bài kiểm thử đạt yêu cầu.
+- [x] Cập nhật xử lý ngày đơn hàng trong module nạp kho.
+- [x] Ghi nhận kết quả kiểm thử gần nhất là 20/20 bài kiểm thử đạt yêu cầu.
 
-### 8.2. Công việc đang tiếp tục hoàn thiện
+### 8.2. Công việc còn cần hoàn thiện
 
 - [ ] Xác minh quy tắc liên kết khách hàng giữa các nguồn dữ liệu.
 - [ ] Xác minh điều kiện xác định đơn hàng hoàn tất.
 - [ ] Hoàn thiện và xác minh kết quả phân khúc khách hàng theo QT-12.
 - [ ] Kiểm thử quy trình cài đặt và chạy dự án trên môi trường độc lập.
+- [ ] Đối chiếu các báo cáo, ảnh minh chứng và tài liệu với kết quả thực tế.
 
 ## 9. Tài liệu liên quan
 
 - `docs/srs.md`: đặc tả yêu cầu phần mềm.
 - `docs/data-requirements.md`: yêu cầu dữ liệu.
+- `docs/architecture.drawio`: sơ đồ kiến trúc.
+- `docs/erd.drawio`: sơ đồ mô hình dữ liệu.
+- `docs/use-case.drawio`: sơ đồ Use Case; cần xác nhận đây là bản được sử dụng chính thức.
+- `docs/wireframe.png`: ảnh wireframe.
 - `docs/bao-cao-chat-luong.md`: báo cáo chất lượng dữ liệu.
 - `docs/bao-cao-nap-kho.md`: báo cáo nạp kho.
 - `docs/pipeline-result.png`: ảnh minh chứng chạy pipeline.
@@ -185,15 +198,14 @@ Sau khi chuẩn bị dữ liệu đầu vào và kích hoạt môi trường ả
 python run_pipeline.py
 ```
 
-Lệnh này lần lượt thực hiện:
+Lệnh này lần lượt thực hiện các bước xử lý dữ liệu và nạp dữ liệu vào kho theo cách triển khai hiện tại.
 
-1. Xử lý và kiểm tra chất lượng dữ liệu.
-2. Nạp dữ liệu vào kho.
+Nếu một bước thất bại, cần kiểm tra thông báo lỗi và kết quả đầu ra của bước đó trước khi tiếp tục.
 
-Nếu một bước thất bại, chương trình sẽ dừng và trả về mã lỗi của bước đó.
+## 11. Nhật ký lỗi, thay đổi thiết kế và khai báo AI
 
-## 11. Bug Log và công khai sử dụng AI
-
-- `docs/bug-log.md`: ghi nhận các vấn đề dữ liệu và cách xử lý.
+- `docs/bug-log.md`: ghi nhận các vấn đề dữ liệu và lỗi kỹ thuật, nguyên nhân, cách xử lý và trạng thái.
 - `docs/ai-disclosure.md`: khai báo việc sử dụng công cụ AI trong quá trình thực hiện dự án.
-- `docs/thay-doi-thiet-ke.md`: ghi nhận các thay đổi thiết kế.
+- `docs/thay-doi-thiet-ke.md`: ghi nhận phản hồi, quyết định và các thay đổi thiết kế theo từng giai đoạn.
+- `docs/bao-cao-chat-luong.md`: ghi nhận kết quả kiểm tra chất lượng dữ liệu.
+- `docs/bao-cao-nap-kho.md`: ghi nhận kết quả nạp kho và các vấn đề chưa được giải quyết.
