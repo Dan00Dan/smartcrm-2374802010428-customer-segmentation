@@ -149,15 +149,25 @@ Vì vậy:
 
 ## 8. Trạng thái công việc
 
+### 8.1. Công việc đã hoàn thành
+
 - [x] Xây dựng pipeline xử lý và kiểm tra chất lượng dữ liệu.
 - [x] Bổ sung kiểm thử tự động cho pipeline.
 - [x] Xây dựng module nạp dữ liệu vào kho CSV.
 - [x] Bổ sung kiểm thử cho module nạp kho.
 - [x] Xây dựng dashboard có bộ lọc tháng, thống kê tổng quan và biểu đồ.
 - [x] Bổ sung cảnh báo về dữ liệu chưa xác định và trạng thái đơn hàng.
-- [ ] Xác minh quy tắc liên kết khách hàng và trạng thái đơn hoàn tất.
-- [ ] Triển khai và xác minh kết quả phân khúc theo QT-12.
-- [ ] Kiểm thử trên môi trường độc lập theo hướng dẫn README.
+- [x] Cố định phiên bản thư viện trong `requirements.txt`.
+- [x] Bổ sung hướng dẫn cài đặt, chạy chương trình và kiểm thử trong README.
+- [x] Chạy kiểm thử tự động với kết quả gần nhất là 16 bài kiểm thử đạt yêu cầu.
+
+### 8.2. Công việc đang tiếp tục hoàn thiện
+
+- [ ] Xác minh quy tắc liên kết khách hàng giữa các nguồn dữ liệu.
+- [ ] Xác minh điều kiện xác định đơn hàng hoàn tất.
+- [ ] Hoàn thiện và xác minh kết quả phân khúc khách hàng theo QT-12.
+- [ ] Kiểm thử quy trình cài đặt và chạy dự án trên môi trường độc lập.
+- [ ] Hoàn thiện ảnh minh chứng và kết quả dashboard phục vụ báo cáo BT2.
 
 ## 9. Tài liệu liên quan
 
@@ -167,6 +177,7 @@ Vì vậy:
 - `docs/bao-cao-nap-kho.md`: báo cáo nạp kho.
 - `docs/pipeline-result.png`: ảnh minh chứng chạy pipeline.
 - `docs/dashboard-01.png.png` đến `docs/dashboard-04.png.png`: ảnh minh chứng dashboard.
+
 ## 10. Chạy pipeline tổng
 
 Sau khi chuẩn bị dữ liệu đầu vào và kích hoạt môi trường ảo, chạy lệnh:
@@ -176,6 +187,7 @@ python run_pipeline.py
 ```
 
 Lệnh này lần lượt thực hiện:
+
 1. Xử lý và kiểm tra chất lượng dữ liệu.
 2. Nạp dữ liệu vào kho.
 
