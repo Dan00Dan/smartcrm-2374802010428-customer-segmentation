@@ -167,7 +167,6 @@ Vì vậy:
 - [ ] Xác minh điều kiện xác định đơn hàng hoàn tất.
 - [ ] Hoàn thiện và xác minh kết quả phân khúc khách hàng theo QT-12.
 - [ ] Kiểm thử quy trình cài đặt và chạy dự án trên môi trường độc lập.
-- [ ] Hoàn thiện ảnh minh chứng và kết quả dashboard phục vụ báo cáo BT2.
 
 ## 9. Tài liệu liên quan
 
