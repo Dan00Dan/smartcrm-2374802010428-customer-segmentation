@@ -376,7 +376,7 @@ if st.button("🔄 Làm mới dữ liệu"):
 try:
     with st.spinner("ĐANG TRUY VẤN: Tải dữ liệu kho Smart CRM..."):
         fact, customers, periods, issues = load_data()
-
+    
     st.success("TRUY VẤN THÀNH CÔNG: Đã tải dữ liệu kho Smart CRM.")
 
 except FileNotFoundError as e:
