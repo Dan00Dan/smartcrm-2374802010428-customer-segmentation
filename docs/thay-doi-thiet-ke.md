@@ -1,9 +1,9 @@
-﻿# Ghi nhận thay đổi thiết kế theo phản hồi BT1
+﻿# Ghi nhận thay đổi thiết kế theo phản hồi BT1 và BT2
 
 **Dự án:** Smart CRM – L1: Tính và gán phân khúc khách hàng  
 **Track:** Data Analyst
 
-Tài liệu ghi nhận phản hồi của giảng viên sau BT1, quyết định xử lý, lý do và ảnh hưởng đến thiết kế dự án.
+Tài liệu ghi nhận phản hồi của giảng viên sau BT1 và BT2, quyết định xử lý, lý do và ảnh hưởng đến thiết kế dự án.
 
 ## TD-01 – Số lượng User Story
 
@@ -43,9 +43,38 @@ Tài liệu ghi nhận phản hồi của giảng viên sau BT1, quyết định
 - **Kết quả kiểm chứng:** Bộ kiểm thử gần nhất đạt 20/20 bài kiểm thử.
 - **Commit liên quan:** `289f6e1 – Fix warehouse order date parsing`.
 
+## TD-06 – Trạng thái truy vấn Dashboard
+
+- **Phản hồi:** Dashboard chưa có minh chứng đầy đủ cho ba trạng thái: đang truy vấn, bộ lọc rỗng và lỗi kết nối dữ liệu.
+- **Quyết định:** SỬA.
+- **Thay đổi:** Bổ sung trạng thái đang truy vấn bằng `st.spinner`, thông báo truy vấn thành công, cảnh báo bộ lọc rỗng và thông báo lỗi khi không tải được dữ liệu kho.
+- **Lý do:** Giúp người dùng nhận biết trạng thái xử lý và nguyên nhân không hiển thị dữ liệu.
+- **Ảnh hưởng:** Điều chỉnh `app.py`, bổ sung trạng thái trực quan trên Dashboard.
+- **Kiểm chứng:** Đối chiếu ba trạng thái truy vấn và chụp ảnh minh chứng phục vụ tiêu chí D4.
+
+## TD-07 – Bổ sung mốc tham chiếu biểu đồ
+
+- **Phản hồi:** Dashboard chưa thể hiện mốc tham chiếu cho từng biểu đồ.
+- **Quyết định:** SỬA.
+- **Thay đổi:** Bổ sung đường tham chiếu trung bình trên các biểu đồ số đơn hàng theo tháng, tổng tiền ghi nhận theo tháng và số lượng khách hàng theo phân khúc.
+- **Lý do:** Hỗ trợ người dùng so sánh quy mô dữ liệu giữa các tháng và các phân khúc.
+- **Ảnh hưởng:** Điều chỉnh hàm `render_svg_chart` và các biểu đồ liên quan trong `app.py`.
+- **Kiểm chứng:** Đối chiếu đường tham chiếu trên Dashboard và chụp ảnh minh chứng.
+
+## TD-08 – Làm rõ cơ chế Migration và Seed
+
+- **Phản hồi:** Repository chưa thể hiện rõ cơ chế khởi tạo kho dữ liệu và seed dữ liệu kiểm thử.
+- **Quyết định:** SỬA.
+- **Thay đổi:** Bổ sung `docs/migration-seed.md`, mô tả cơ chế khởi tạo kho CSV bằng ETL snapshot và seed dữ liệu kiểm thử bằng `pandas.DataFrame`.
+- **Lý do:** Làm rõ cách khởi tạo dữ liệu và tái lập kiểm thử mà không phụ thuộc vào SQL Migration.
+- **Ảnh hưởng:** Bổ sung tài liệu quy trình khởi tạo kho và kiểm thử.
+- **Kiểm chứng:** Chạy `python -m pytest tests -q`, kết quả hiện tại 20/20 test PASS.
+
 ## Trạng thái thực hiện
 
-- Đã ghi nhận 4 nhóm phản hồi thiết kế từ BT1.
-- Đã bổ sung TD-05 để ghi nhận việc sửa lỗi xử lý ngày trong ETL.
-- Các quyết định, lý do và ảnh hưởng được ghi lại để phục vụ theo dõi thay đổi.
-- Cần tiếp tục đối chiếu SRS, sơ đồ kiến trúc, wireframe và kết quả thực thi để xác nhận tính nhất quán của toàn bộ dự án.
+- Đã ghi nhận TD-01 đến TD-05 từ phản hồi BT1.
+- Đã bổ sung TD-06 đến TD-08 từ phản hồi BT2.
+- Đã điều chỉnh Dashboard để thể hiện trạng thái truy vấn, bộ lọc rỗng và mốc tham chiếu biểu đồ.
+- Đã bổ sung tài liệu `docs/migration-seed.md`.
+- Bộ kiểm thử hiện tại đạt 20/20 bài kiểm thử.
+- Tiếp tục hoàn thiện minh chứng D4 và kiểm tra tính nhất quán của repository trước khi chuyển sang BT3.
