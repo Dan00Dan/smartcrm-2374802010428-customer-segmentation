@@ -1,6 +1,6 @@
 from pathlib import Path
 from html import escape
-
+from src.transform.segment_customers import assign_customer_segments
 import pandas as pd
 import streamlit as st
 
@@ -768,37 +768,8 @@ else:
     # VIP > THƯỜNG XUYÊN > MỚI > NGỦ ĐÔNG
     # -----------------------------------------------------
 
-    segment_df["customer_segment"] = "Ngủ đông"
-
-    # Khách mới: đúng 1 giao dịch trong 90 ngày
-    segment_df.loc[
-        segment_df["orders_90d"] == 1,
-        "customer_segment",
-    ] = "Mới"
-
-    # Khách thường xuyên
-    segment_df.loc[
-        (
-            segment_df["spending_12m"] >= 10_000_000
-        )
-        | (
-            segment_df["orders_12m"] >= 3
-        ),
-        "customer_segment",
-    ] = "Thường xuyên"
-
-    # Khách VIP
-    segment_df.loc[
-        (
-            segment_df["spending_12m"] >= 30_000_000
-        )
-        | (
-            segment_df["orders_12m"] >= 8
-        ),
-        "customer_segment",
-    ] = "VIP"
-
- 
+    segment_df = assign_customer_segments(segment_df)
+    
     # -----------------------------------------------------
     # THỐNG KÊ PHÂN KHÚC
     # -----------------------------------------------------

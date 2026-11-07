@@ -1,8 +1,10 @@
-﻿import unittest
+﻿
+import unittest
 import pandas as pd
 
 from src.transform.normalize_dates import normalize_date
 from src.transform.normalize_amount import normalize_amount
+
 
 class TestNormalizeDate(unittest.TestCase):
     def test_valid_date(self):
@@ -18,6 +20,7 @@ class TestNormalizeDate(unittest.TestCase):
 
     def test_invalid_date(self):
         self.assertTrue(pd.isna(normalize_date("not-a-date")))
+
 
 class TestNormalizeAmount(unittest.TestCase):
     def test_valid_amount(self):
@@ -46,6 +49,11 @@ class TestNormalizeAmount(unittest.TestCase):
 
     def test_negative_amount(self):
         self.assertTrue(pd.isna(normalize_amount("-100")))
+
+    # Kiểm thử biên: thành tiền bằng 0
+    def test_zero_amount(self):
+        self.assertEqual(normalize_amount("0"), 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
