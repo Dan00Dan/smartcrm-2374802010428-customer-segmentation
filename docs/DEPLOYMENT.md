@@ -32,6 +32,8 @@ cd smartcrm-2374802010428-customer-segmentation
 
 ## 4. Deploy with Docker Compose
 
+Run the following commands from the repository root directory, where the Docker Compose file is located.
+
 Build and start the application:
 
 ```powershell
@@ -44,7 +46,7 @@ Check container status:
 docker compose ps
 ```
 
-The container should report `healthy`.
+The application container should report `healthy`.
 
 ## 5. Access the Application
 
@@ -60,7 +62,8 @@ The Smart CRM dashboard should load successfully.
 - Confirm container health status is `healthy`.
 - Confirm dashboard is accessible at `http://localhost:8501`.
 - Confirm required warehouse CSV files exist in `data/warehouse/`.
-- Confirm dashboard displays the available customer segmentation data.
+- Verify the dashboard displays the available customer segmentation data.
+- If segmentation data is unavailable, check the warehouse files and pipeline execution status.
 
 ## 7. Stop and Restart the Application
 
@@ -70,7 +73,7 @@ Stop the application:
 docker compose down
 ```
 
-Restart:
+Restart the application:
 
 ```powershell
 docker compose up -d
@@ -80,7 +83,13 @@ docker compose up -d
 
 ### Container is unhealthy
 
-Check logs:
+Check container status:
+
+```powershell
+docker compose ps
+```
+
+Check application logs:
 
 ```powershell
 docker compose logs --tail 50
@@ -93,6 +102,8 @@ Stop the application using port 8501 or change the port mapping in `docker-compo
 ### Application cannot load data
 
 Verify that the required warehouse CSV files exist in `data/warehouse/`.
+
+If data is missing or invalid, check the pipeline execution status and data quality validation results.
 
 ### Docker is not running
 
