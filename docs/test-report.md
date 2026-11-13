@@ -13,8 +13,8 @@
 |---|---|
 | Hệ điều hành | Windows |
 | Python | 3.13.15 |
-| Framework | pytest 9.1.1 |
-| Môi trường | `.venv` |
+| Framework kiểm thử | pytest 9.1.1 |
+| Môi trường thực thi | `.venv` |
 | Công cụ | VS Code, Git |
 | Lệnh kiểm thử | `python -m pytest tests -v` |
 
@@ -28,20 +28,20 @@
 | BLOCKED | 0 |
 | Thời gian thực thi | 1.07 giây |
 
-**Kết luận:** Toàn bộ 30 Test Case tự động đạt PASS tại lần kiểm thử ngày 13/11/2026.
+**Kết luận:** Toàn bộ 30 Test Case tự động đạt trạng thái PASS trong lần kiểm thử ngày 13/11/2026.
 
 ## 3. Bảng Test Case đại diện
 
-Bảng dưới đây trình bày 12 Test Case đại diện cho các chức năng chính, dữ liệu sai, kiểm thử biên, chất lượng dữ liệu và khả năng tái lập.
+Bảng dưới đây trình bày 12 Test Case đại diện cho các chức năng chính, bao gồm kiểm thử chức năng, kiểm thử dữ liệu không hợp lệ, kiểm thử biên, chất lượng dữ liệu và kiểm thử hồi quy.
 
 | ID | Test Type | Test Objective | Preconditions | Test Data | Test Steps | Expected Result | Actual Result / Status |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|
 | TC-01 | Data Quality | Phát hiện khóa nghiệp vụ trùng | Có dữ liệu đơn hàng | Business key trùng | Nạp dữ liệu | Không nạp bản ghi trùng | Đúng / PASS |
 | TC-03 | Negative | Ghi nhận thành tiền không hợp lệ | Có dữ liệu đơn hàng | Amount sai định dạng | Nạp dữ liệu | Ghi nhận lỗi dữ liệu | Đúng / PASS |
-| TC-05 | Data Quality | Xử lý khách hàng chưa xác định | Có đơn hàng chưa ánh xạ khách hàng | Customer UNKNOWN | Nạp dữ liệu | Gán UNKNOWN, ghi nhận đơn hàng | Đúng / PASS |
+| TC-05 | Data Quality | Xử lý khách hàng chưa xác định | Có đơn hàng chưa ánh xạ khách hàng | Customer UNKNOWN | Nạp dữ liệu | Gán UNKNOWN và ghi nhận đơn hàng | Đúng / PASS |
 | TC-07 | Negative | Kiểm tra thiếu cột bắt buộc | Có dữ liệu đầu vào | Thiếu required column | Nạp dữ liệu | Báo lỗi thiếu cột | Đúng / PASS |
 | TC-08 | Regression | Kiểm tra nạp kho lặp | Kho đã được nạp lần đầu | Cùng bộ dữ liệu | Nạp lần hai | Không tạo bản ghi trùng | Đúng / PASS |
-| TC-09 | Functional | Chuẩn hóa nhiều định dạng ngày | Có hàm chuẩn hóa ngày | Ngày định dạng khác | Gọi hàm chuẩn hóa | Ngày được chuẩn hóa chính xác | Đúng / PASS |
+| TC-09 | Functional | Chuẩn hóa nhiều định dạng ngày | Có hàm chuẩn hóa ngày | Ngày có định dạng khác nhau | Gọi hàm chuẩn hóa | Ngày được chuẩn hóa chính xác | Đúng / PASS |
 | TC-11 | Negative | Xử lý ngày không hợp lệ | Có hàm chuẩn hóa ngày | Ngày sai định dạng | Gọi hàm chuẩn hóa | Trả về giá trị thiếu | Đúng / PASS |
 | TC-14 | Functional | Chuẩn hóa tiền có dấu phân cách | Có hàm chuẩn hóa tiền | Amount có dấu phân cách hàng nghìn | Gọi hàm chuẩn hóa | Chuyển thành số đúng | Đúng / PASS |
 | TC-20 | Boundary | Kiểm tra thành tiền bằng 0 | Có hàm chuẩn hóa tiền | Amount = 0 | Gọi hàm chuẩn hóa | Giữ giá trị 0 hợp lệ | Đúng / PASS |
@@ -51,51 +51,47 @@ Bảng dưới đây trình bày 12 Test Case đại diện cho các chức năn
 
 ## 4. Phân loại kiểm thử
 
-| Test Type | Nội dung |
+| Test Type | Nội dung kiểm thử |
 |---|---|
 | Functional | Chuẩn hóa dữ liệu, xử lý đơn hàng và phân khúc khách hàng |
-| Boundary | Thành tiền bằng 0 và ngưỡng phân khúc |
-| Negative | Ngày, thành tiền sai định dạng và thiếu cột |
-| Data Quality | Khóa trùng, khách hàng UNKNOWN và lỗi dữ liệu |
-| Regression | Nạp lại dữ liệu và bảo toàn DataFrame đầu vào |
+| Boundary | Thành tiền bằng 0 và các ngưỡng phân khúc |
+| Negative | Ngày, thành tiền sai định dạng và thiếu cột bắt buộc |
+| Data Quality | Khóa nghiệp vụ trùng, khách hàng UNKNOWN và lỗi dữ liệu |
+| Regression | Nạp dữ liệu lần hai và bảo toàn DataFrame đầu vào |
 
 ## 5. Kết quả kiểm thử phân khúc QT-12
 
-Các trường hợp đã kiểm thử:
+Các trường hợp kiểm thử quy tắc phân khúc khách hàng QT-12 bao gồm:
 
-- VIP theo ngưỡng chi tiêu.
-- VIP theo số lượng đơn.
-- Thường xuyên theo ngưỡng chi tiêu.
-- Thường xuyên theo số lượng đơn.
-- Khách hàng mới.
-- Khách hàng ngủ đông.
-- Ưu tiên VIP cao hơn Thường xuyên.
-- Ưu tiên Thường xuyên cao hơn Mới.
-- Hàm phân khúc không làm thay đổi DataFrame đầu vào.
+1. VIP theo ngưỡng chi tiêu.
+2. VIP theo số lượng đơn hàng.
+3. Thường xuyên theo ngưỡng chi tiêu.
+4. Thường xuyên theo số lượng đơn hàng.
+5. Khách hàng mới.
+6. Khách hàng ngủ đông.
+7. Kiểm tra mức ưu tiên VIP cao hơn Thường xuyên.
+8. Kiểm tra mức ưu tiên Thường xuyên cao hơn Mới.
+9. Kiểm tra hàm phân khúc không làm thay đổi DataFrame đầu vào.
 
 **Kết quả: 9/9 PASS.**
 
+Các trường hợp kiểm thử xác nhận việc phân loại khách hàng theo các điều kiện và thứ tự ưu tiên được quy định trong QT-12.
+
 ## 6. Bằng chứng kiểm thử
 
-Các ảnh minh chứng được lưu tại `docs/screenshots/`:
+Các ảnh minh chứng được lưu tại thư mục `docs/screenshots/`.
 
-| Ảnh | Nội dung |
+| Tên ảnh | Nội dung minh chứng |
 |---|---|
 | `TEST-03-pytest-final.png` | Kết quả chạy toàn bộ Test Suite |
-| `TEST-04-QT12-final.png` | Kết quả kiểm thử phân khúc QT-12 |
+| `TEST-04-QT12-final.png` | Kết quả kiểm thử quy tắc phân khúc QT-12 |
 
-Các ảnh được sử dụng làm bằng chứng kiểm thử trong báo cáo BT3.
+Các ảnh trên ghi nhận kết quả thực thi kiểm thử tại thời điểm lập báo cáo.
 
 ## 7. Kết luận
 
-Lần kiểm thử ngày 13/11/2026 đạt 30/30 PASS, không có FAIL hoặc BLOCKED.
+Trong lần kiểm thử ngày 13/11/2026, hệ thống đạt kết quả 30/30 Test Case PASS, không có trường hợp FAIL hoặc BLOCKED. Thời gian thực thi toàn bộ Test Suite là 1.07 giây.
 
-Các chức năng được kiểm tra bao gồm:
+Các nội dung được kiểm thử bao gồm chuẩn hóa dữ liệu đầu vào, nạp dữ liệu vào kho dữ liệu, xử lý và phân loại đơn hàng, kiểm tra chất lượng dữ liệu và phân khúc khách hàng theo quy tắc QT-12.
 
-- Chuẩn hóa dữ liệu đầu vào.
-- Nạp dữ liệu vào kho dữ liệu.
-- Xử lý và phân loại đơn hàng.
-- Kiểm tra chất lượng dữ liệu.
-- Phân khúc khách hàng theo QT-12.
-
-Kết quả phản ánh trạng thái chương trình tại thời điểm thực hiện kiểm thử và là cơ sở cho tài liệu kiểm thử trong BT3.
+Kết quả kiểm thử phản ánh trạng thái chương trình tại thời điểm thực hiện và là cơ sở đánh giá các chức năng thuộc phạm vi kiểm thử của dự án Smart CRM trong BT3.
