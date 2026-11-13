@@ -1,0 +1,17 @@
+
+.venv
+.venv-1
+__pycache__
+.pytest_cache
+.git
+*.pyc
+*.ipynb
+check_unknown.py
+duplicate_customer_phones.csv
+duplicate_phone_summary.csv
+phone_analysis.csv
+unknown_analysis.csv
+unknown_name_check.csv
+unknown_phone_candidates.csv
+unknown_records.csv
+.env
