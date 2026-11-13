@@ -1,4 +1,5 @@
-﻿# BUG LOG – SMART CRM
+﻿
+# BUG LOG – SMART CRM
 
 **Dự án:** Smart CRM – L1: Hồ sơ khách hàng và phân khúc  
 **Sinh viên:** Trần Thị Như Quỳnh  
@@ -10,7 +11,7 @@
 ## 1. Danh sách lỗi
 
 | Bug ID | Mô tả lỗi | Severity | Nguyên nhân | Cách xử lý | Trạng thái | Commit liên kết |
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | BUG-01 | Không xác định được khách hàng cho một số đơn hàng | Major | Dữ liệu nguồn chưa đủ thông tin để ánh xạ chính xác đơn hàng với hồ sơ khách hàng | Gán khóa khách hàng `UNKNOWN`, ghi nhận vấn đề chất lượng dữ liệu; không tự ghép theo tên | Đã xử lý an toàn; chờ xác minh dữ liệu nguồn | N/A – Vấn đề dữ liệu nguồn |
 | BUG-02 | Chưa xác minh được trạng thái hoàn thành của đơn hàng | Major | Dữ liệu nguồn chưa có thông tin trạng thái đơn hàng đáng tin cậy | Đánh dấu nguồn chưa đủ điều kiện và chặn công bố phân khúc | Đang chờ bổ sung hoặc xác minh dữ liệu | N/A – Vấn đề dữ liệu nguồn |
 | BUG-03 | Một số đơn hàng có dữ liệu ngày hoặc thành tiền không hợp lệ | Minor | Giá trị nguồn bị thiếu hoặc không đúng định dạng yêu cầu | Tách đơn hàng không hợp lệ sang danh sách bị từ chối và ghi rõ lý do | Đã xử lý trong pipeline | N/A – Xử lý bằng pipeline |
@@ -31,4 +32,4 @@
 - BUG-03 được xử lý bằng cơ chế kiểm tra và phân loại dữ liệu không hợp lệ.
 - BUG-04 đã được sửa và kiểm tra lại bằng bộ kiểm thử tự động.
 - Commit liên kết được ghi nhận khi xác định được commit trực tiếp xử lý lỗi.
-- Các vấn đề dữ liệu nguồn không có commit sửa dữ liệu được ghi `N/A`.
+- Các vấn đề dữ liệu nguồn không có commit sửa dữ liệu được ghi là `N/A`.
