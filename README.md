@@ -16,12 +16,14 @@ Phân khúc khách hàng dự kiến tuân theo quy tắc QT-12 gồm: VIP, Thư
 - Pandas
 - Streamlit
 - Pytest
+- Docker và Docker Compose
 - CSV làm định dạng dữ liệu đầu vào, dữ liệu sau xử lý và kho dữ liệu trong phạm vi hiện tại.
 
 ## 3. Yêu cầu môi trường
 
 - Python tương thích với các thư viện trong `requirements.txt`.
 - Git để tải mã nguồn.
+- Docker Desktop nếu triển khai bằng Docker.
 - Hai bộ dữ liệu đầu vào theo cấu trúc dự án.
 - PowerShell hoặc terminal tương đương để thực thi các lệnh.
 
@@ -108,14 +110,46 @@ Các chỉ số hiển thị phải được diễn giải theo giới hạn c�
 ### Bước 8. Chạy kiểm thử
 
 ```powershell
-py -m pytest -v
+python -m pytest tests -v
 ```
 
-Kết quả kiểm thử gần nhất được ghi nhận trong quá trình phát triển là **20 bài kiểm thử đạt yêu cầu**.
+Kết quả kiểm thử gần nhất ngày 13/11/2026: **30/30 bài kiểm thử đạt yêu cầu (PASS)**.
 
 Khi sử dụng hoặc đánh giá dự án, cần chạy lại lệnh kiểm thử để xác nhận trạng thái hiện tại của mã nguồn.
 
-## 5. Quy trình xử lý dữ liệu
+## 5. Triển khai bằng Docker
+
+Yêu cầu Docker Desktop đã được cài đặt và đang hoạt động.
+
+### Khởi chạy ứng dụng
+
+```powershell
+docker compose up --build -d
+```
+
+Mở trình duyệt tại:
+
+`http://localhost:8501`
+
+### Kiểm tra trạng thái container
+
+```powershell
+docker compose ps
+```
+
+Container `smartcrm` cần ở trạng thái `healthy` trước khi sử dụng dashboard.
+
+### Dừng ứng dụng
+
+```powershell
+docker compose down
+```
+
+Không sử dụng lệnh xóa volume nếu chưa kiểm tra dữ liệu cần bảo toàn.
+
+Chi tiết triển khai được trình bày tại `docs/DEPLOYMENT.md`.
+
+## 6. Quy trình xử lý dữ liệu
 
 1. Đọc và thống kê dữ liệu đầu vào.
 2. Chuẩn hóa ngày tháng và số tiền.
@@ -125,7 +159,7 @@ Khi sử dụng hoặc đánh giá dự án, cần chạy lại lệnh kiểm th
 6. Kiểm tra khóa nghiệp vụ và ghi nhận bản ghi chưa xác định được khách hàng.
 7. Hiển thị số liệu tổng hợp và cảnh báo trên dashboard.
 
-## 6. Cấu trúc thư mục chính
+## 7. Cấu trúc thư mục chính
 
 - `app.py`: giao diện dashboard Streamlit.
 - `run_pipeline.py`: điểm chạy pipeline tổng.
@@ -142,7 +176,7 @@ Khi sử dụng hoặc đánh giá dự án, cần chạy lại lệnh kiểm th
 - `requirements.txt`: danh sách thư viện.
 - `.gitignore`: danh sách file và thư mục không đưa lên GitHub.
 
-## 7. Giới hạn dữ liệu hiện tại
+## 8. Giới hạn dữ liệu hiện tại
 
 Nguồn dữ liệu hiện tại chưa xác minh đầy đủ khóa liên kết giữa hồ sơ khách hàng và đơn hàng; đồng thời chưa có thông tin đủ tin cậy để xác định chắc chắn trạng thái đơn hàng hoàn tất.
 
@@ -154,9 +188,9 @@ Vì vậy:
 - Các biểu đồ chỉ phản ánh bản ghi và số tiền được ghi nhận trong kho; không khẳng định tất cả đơn là đơn hoàn tất hoặc số tiền là doanh thu hợp lệ.
 - Kết quả phân khúc khách hàng chưa được công bố cho đến khi các điều kiện dữ liệu và nghiệp vụ được xác minh.
 
-## 8. Trạng thái công việc
+## 9. Trạng thái công việc
 
-### 8.1. Công việc đã thực hiện
+### 9.1. Công việc đã thực hiện
 
 - [x] Xây dựng pipeline xử lý và kiểm tra chất lượng dữ liệu.
 - [x] Bổ sung kiểm thử tự động cho pipeline.
@@ -167,9 +201,12 @@ Vì vậy:
 - [x] Cố định phiên bản thư viện trong `requirements.txt`.
 - [x] Bổ sung hướng dẫn cài đặt, chạy chương trình và kiểm thử trong README.
 - [x] Cập nhật xử lý ngày đơn hàng trong module nạp kho.
-- [x] Ghi nhận kết quả kiểm thử gần nhất là 20/20 bài kiểm thử đạt yêu cầu.
+- [x] Xây dựng Dockerfile và Docker Compose.
+- [x] Bổ sung tài liệu triển khai và bảo mật.
+- [x] Bổ sung Test Plan, Test Report và Bug Log.
+- [x] Ghi nhận kết quả kiểm thử gần nhất là 30/30 bài kiểm thử đạt yêu cầu.
 
-### 8.2. Công việc còn cần hoàn thiện
+### 9.2. Công việc còn cần hoàn thiện
 
 - [ ] Xác minh quy tắc liên kết khách hàng giữa các nguồn dữ liệu.
 - [ ] Xác minh điều kiện xác định đơn hàng hoàn tất.
@@ -177,20 +214,27 @@ Vì vậy:
 - [ ] Kiểm thử quy trình cài đặt và chạy dự án trên môi trường độc lập.
 - [ ] Đối chiếu các báo cáo, ảnh minh chứng và tài liệu với kết quả thực tế.
 
-## 9. Tài liệu liên quan
+## 10. Tài liệu liên quan
 
 - `docs/srs.md`: đặc tả yêu cầu phần mềm.
 - `docs/data-requirements.md`: yêu cầu dữ liệu.
 - `docs/architecture.drawio`: sơ đồ kiến trúc.
 - `docs/erd.drawio`: sơ đồ mô hình dữ liệu.
-- `docs/use-case.drawio`: sơ đồ Use Case; cần xác nhận đây là bản được sử dụng chính thức.
+- `docs/use-case.drawio`: sơ đồ Use Case.
 - `docs/wireframe.png`: ảnh wireframe.
 - `docs/bao-cao-chat-luong.md`: báo cáo chất lượng dữ liệu.
 - `docs/bao-cao-nap-kho.md`: báo cáo nạp kho.
 - `docs/pipeline-result.png`: ảnh minh chứng chạy pipeline.
-- `docs/dashboard-01.png.png` đến `docs/dashboard-04.png.png`: ảnh minh chứng dashboard.
+- `docs/dashboard-01.png` đến `docs/dashboard-04.png`: ảnh minh chứng dashboard.
+- `docs/test-plan.md`: kế hoạch kiểm thử.
+- `docs/test-report.md`: báo cáo kiểm thử.
+- `docs/bug-log.md`: nhật ký lỗi.
+- `docs/DEPLOYMENT.md`: hướng dẫn triển khai.
+- `docs/SECURITY-CHECKLIST.md`: checklist bảo mật.
+- `docs/ai-disclosure.md`: khai báo sử dụng AI.
+- `docs/thay-doi-thiet-ke.md`: nhật ký thay đổi thiết kế.
 
-## 10. Chạy pipeline tổng
+## 11. Chạy pipeline tổng
 
 Sau khi chuẩn bị dữ liệu đầu vào và kích hoạt môi trường ảo, chạy lệnh:
 
@@ -202,7 +246,7 @@ Lệnh này lần lượt thực hiện các bước xử lý dữ liệu và n�
 
 Nếu một bước thất bại, cần kiểm tra thông báo lỗi và kết quả đầu ra của bước đó trước khi tiếp tục.
 
-## 11. Nhật ký lỗi, thay đổi thiết kế và khai báo AI
+## 12. Nhật ký lỗi, thay đổi thiết kế và khai báo AI
 
 - `docs/bug-log.md`: ghi nhận các vấn đề dữ liệu và lỗi kỹ thuật, nguyên nhân, cách xử lý và trạng thái.
 - `docs/ai-disclosure.md`: khai báo việc sử dụng công cụ AI trong quá trình thực hiện dự án.
