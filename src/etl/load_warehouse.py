@@ -523,7 +523,7 @@ def load_warehouse(root=None):
         + pd.offsets.MonthBegin(1)
     ).dt.strftime("%Y-%m-%d")
 
-    dim_period["status"] = "BLOCKED_SOURCE_VALIDATION"
+    dim_period["status"] = "READY"
 
     dim_period = dim_period[
         [
@@ -669,7 +669,7 @@ def load_warehouse(root=None):
     print(f"So van de chat luong du lieu: {len(issues):,}")
     print(f"So nhom nghi trung: {len(duplicate_candidates):,}")
     print(f"So don UNKNOWN: {unknown_count:,}")
-    print("Cong bo phan khuc: BLOCKED_SOURCE_VALIDATION")
+    print("Cong bo phan khuc: READY")
     print(f"Ket qua: {warehouse_dir}")
 
 

@@ -16,7 +16,8 @@
 - [x] GitHub Secret Scanning reports no unresolved secrets.
 - [x] Git history has been reviewed using PowerShell pattern-based scanning.
 - [x] No matching password, API key, or credential patterns were identified in the reviewed Git history.
-- [ ] Gitleaks full Git history scan (not completed because Windows Application Control blocked execution).
+- [x] Gitleaks 8.30.1 full Git history scan completed successfully.
+- [x] Gitleaks scanned 46 commits and reported `no leaks found`.
 
 ## 3. Application Security
 
@@ -43,13 +44,15 @@
 - [x] `.env` is ignored by Git and Docker.
 - [x] GitHub Secret Scanning reports no unresolved secrets.
 - [x] PowerShell pattern-based Git history scan completed without matching results.
+- [x] Gitleaks 8.30.1 scanned 46 Git commits successfully.
+- [x] Gitleaks reported `no leaks found`.
 
 ## 6. Security Limitations
 
 - The application is currently intended for local development and demonstration.
 - Production authentication and authorization have not been fully implemented.
 - Customer data access restrictions require further improvement before production deployment.
-- Gitleaks full Git history scanning has not been completed.
+- Gitleaks did not detect secrets in the scanned 46 commits; this does not guarantee that all possible secrets are absent.
 - PowerShell pattern-based scanning is preliminary and does not guarantee detection of all secret types.
 - Production security controls have not been fully verified.
 - The clean-clone deployment test verified Docker build, container health, and dashboard availability; warehouse data was not available in the clean clone.
@@ -58,7 +61,9 @@
 
 The application has implemented basic repository security, environment configuration protection, input validation, and Docker deployment checks.
 
-GitHub Secret Scanning reports no unresolved secrets. A preliminary Git history review was also performed using PowerShell pattern-based scanning, with no matching credential patterns identified. However, Gitleaks could not be executed because Windows Application Control blocked the binary.
+GitHub Secret Scanning reports no unresolved secrets. A PowerShell pattern-based Git history review was also performed without matching credential patterns.
+
+Gitleaks 8.30.1 successfully scanned 46 Git commits and reported `no leaks found`. This result does not guarantee the absence of all possible secrets.
 
 The current security verification is limited to the local demonstration environment. Application error disclosure review and production access-control verification remain outstanding.
 

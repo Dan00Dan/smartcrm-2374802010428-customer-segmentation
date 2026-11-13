@@ -1,10 +1,11 @@
 # TEST REPORT – SMART CRM
 
-**Dự án:** Smart CRM – L1 Hồ sơ khách hàng và phân khúc  
+**Dự án:** Smart CRM – L1: Hồ sơ khách hàng và phân khúc  
 **Người thực hiện:** Trần Thị Như Quỳnh  
 **MSSV:** 2374802010428  
 **Track:** Data Analyst  
-**Ngày kiểm thử:** 13/11/2026
+**Ngày kiểm thử:** 13/11/2026  
+**Phiên bản:** 1.3
 
 ## 1. Môi trường kiểm thử
 
@@ -14,21 +15,24 @@
 | Python | 3.13.15 |
 | Framework | pytest 9.1.1 |
 | Môi trường | `.venv` |
+| Công cụ | VS Code, Git |
 | Lệnh kiểm thử | `python -m pytest tests -v` |
 
 ## 2. Kết quả kiểm thử tổng thể
 
 | Nội dung | Kết quả |
 |---|---:|
-| Tổng số test case | 30 |
+| Tổng số Test Case tự động | 30 |
 | PASS | 30 |
 | FAIL | 0 |
 | BLOCKED | 0 |
-| Thời gian thực thi | 2.04 giây |
+| Thời gian thực thi | 1.07 giây |
 
-**Kết luận:** Toàn bộ 30 test case đạt PASS tại lần kiểm thử ngày 13/11/2026.
+**Kết luận:** Toàn bộ 30 Test Case tự động đạt PASS tại lần kiểm thử ngày 13/11/2026.
 
-## 3. Bảng test case đại diện
+## 3. Bảng Test Case đại diện
+
+Bảng dưới đây trình bày 12 Test Case đại diện cho các chức năng chính, dữ liệu sai, kiểm thử biên, chất lượng dữ liệu và khả năng tái lập.
 
 | ID | Test Type | Test Objective | Preconditions | Test Data | Test Steps | Expected Result | Actual Result / Status |
 |---|---|---|---|---|---|---|
@@ -47,15 +51,15 @@
 
 ## 4. Phân loại kiểm thử
 
-| Loại | Nội dung |
+| Test Type | Nội dung |
 |---|---|
-| Functional | Chuẩn hóa dữ liệu, xử lý đơn hàng và phân khúc |
+| Functional | Chuẩn hóa dữ liệu, xử lý đơn hàng và phân khúc khách hàng |
 | Boundary | Thành tiền bằng 0 và ngưỡng phân khúc |
-| Negative | Ngày, thành tiền sai và thiếu cột |
-| Data Quality | Khóa trùng, khách hàng UNKNOWN |
-| Regression | Nạp lại dữ liệu và bảo toàn DataFrame |
+| Negative | Ngày, thành tiền sai định dạng và thiếu cột |
+| Data Quality | Khóa trùng, khách hàng UNKNOWN và lỗi dữ liệu |
+| Regression | Nạp lại dữ liệu và bảo toàn DataFrame đầu vào |
 
-## 5. Kiểm thử phân khúc QT-12
+## 5. Kết quả kiểm thử phân khúc QT-12
 
 Các trường hợp đã kiểm thử:
 
@@ -73,14 +77,14 @@ Các trường hợp đã kiểm thử:
 
 ## 6. Bằng chứng kiểm thử
 
-Các ảnh được cập nhật theo lần kiểm thử gần nhất:
+Các ảnh minh chứng được lưu tại `docs/screenshots/`:
 
 | Ảnh | Nội dung |
 |---|---|
-| `docs/screenshots/TEST-03-pytest-final.png` | Kết quả chạy toàn bộ test suite |
-| `docs/screenshots/TEST-04-QT12-final.png` | Kết quả kiểm thử phân khúc QT-12 |
+| `TEST-03-pytest-final.png` | Kết quả chạy toàn bộ Test Suite |
+| `TEST-04-QT12-final.png` | Kết quả kiểm thử phân khúc QT-12 |
 
-Các ảnh trên được sử dụng làm bằng chứng kiểm thử trong báo cáo BT3.
+Các ảnh được sử dụng làm bằng chứng kiểm thử trong báo cáo BT3.
 
 ## 7. Kết luận
 
@@ -95,4 +99,3 @@ Các chức năng được kiểm tra bao gồm:
 - Phân khúc khách hàng theo QT-12.
 
 Kết quả phản ánh trạng thái chương trình tại thời điểm thực hiện kiểm thử và là cơ sở cho tài liệu kiểm thử trong BT3.
-

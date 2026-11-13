@@ -4,7 +4,8 @@
 **Sinh viên:** Trần Thị Như Quỳnh  
 **MSSV:** 2374802010428  
 **Track:** Data Analyst  
-**Phiên bản:** 1.1
+**Phiên bản:** 1.3  
+**Ngày cập nhật:** 13/11/2026
 
 ## 1. Mục tiêu kiểm thử
 
@@ -34,11 +35,11 @@ Kiểm tra tính đúng đắn, độ tin cậy và khả năng tái lập của
 | Dữ liệu | Bộ dữ liệu kiểm thử độc lập |
 | Phương pháp | Kiểm thử tự động |
 
-## 4. Danh sách test case
+## 4. Danh sách Test Case
 
 ### 4.1. Kiểm thử nạp kho dữ liệu
 
-| ID | Test case | Kết quả mong đợi |
+| ID | Test Case | Kết quả mong đợi |
 |---|---|---|
 | TC-01 | Từ chối khóa nghiệp vụ trùng | Không nạp bản ghi trùng |
 | TC-02 | Từ chối mã bản ghi khách hàng trùng | Không tạo khách hàng trùng |
@@ -51,7 +52,7 @@ Kiểm tra tính đúng đắn, độ tin cậy và khả năng tái lập của
 
 ### 4.2. Kiểm thử chuẩn hóa dữ liệu
 
-| ID | Test case | Kết quả mong đợi |
+| ID | Test Case | Kết quả mong đợi |
 |---|---|---|
 | TC-09 | Chuẩn hóa ngày theo định dạng khác | Chuẩn hóa ngày chính xác |
 | TC-10 | Ngày rỗng | Trả về giá trị thiếu |
@@ -68,13 +69,13 @@ Kiểm tra tính đúng đắn, độ tin cậy và khả năng tái lập của
 
 ### 4.3. Kiểm thử xử lý đơn hàng
 
-| ID | Test case | Kết quả mong đợi |
+| ID | Test Case | Kết quả mong đợi |
 |---|---|---|
 | TC-21 | Tách đơn hàng hợp lệ và bị từ chối | Phân loại đúng, không mất bản ghi |
 
 ### 4.4. Kiểm thử phân khúc khách hàng QT-12
 
-| ID | Test case | Kết quả mong đợi |
+| ID | Test Case | Kết quả mong đợi |
 |---|---|---|
 | TC-22 | VIP theo ngưỡng chi tiêu | Gán VIP đúng |
 | TC-23 | VIP theo số lượng đơn | Gán VIP đúng |
@@ -88,39 +89,48 @@ Kiểm tra tính đúng đắn, độ tin cậy và khả năng tái lập của
 
 ## 5. Phân loại kiểm thử
 
-| Nhóm kiểm thử | Nội dung |
-|---|---|
-| Luồng đúng | Chuẩn hóa dữ liệu hợp lệ, nạp dữ liệu, xử lý đơn hàng và phân khúc hợp lệ |
-| Kiểm thử biên | Thành tiền bằng 0; ngưỡng chi tiêu và số lượng đơn theo QT-12 |
-| Dữ liệu sai | Ngày không hợp lệ, thành tiền không hợp lệ, thiếu cột bắt buộc |
-| Chất lượng dữ liệu | Khóa trùng, mã khách hàng chưa xác định, dữ liệu thiếu và giao dịch lỗi |
-| Tái lập | Nạp dữ liệu nhiều lần không tạo bản ghi trùng; kiểm tra tính toàn vẹn DataFrame đầu vào |
+| Nhóm kiểm thử | Nội dung | Test Case tiêu biểu |
+|---|---|---|
+| Functional | Kiểm tra luồng xử lý dữ liệu hợp lệ, nạp dữ liệu và phân khúc | TC-05, TC-12, TC-18, TC-22 |
+| Boundary | Kiểm tra giá trị biên và ngưỡng phân khúc | TC-17, TC-20, TC-22, TC-23 |
+| Negative | Kiểm tra dữ liệu sai định dạng, thiếu dữ liệu và dữ liệu không hợp lệ | TC-03, TC-04, TC-07, TC-11, TC-16 |
+| Data Quality | Kiểm tra khóa trùng, khách hàng chưa xác định và dữ liệu thiếu | TC-01, TC-02, TC-05, TC-06 |
+| Regression | Kiểm tra khả năng nạp lại dữ liệu và bảo toàn dữ liệu đầu vào | TC-08, TC-30 |
 
 ## 6. Phương pháp thực thi
 
-Chạy toàn bộ test bằng lệnh:
+### 6.1. Chạy toàn bộ Test Suite
 
 ```powershell
 python -m pytest tests -v
 ```
 
-Kiểm tra danh sách test:
+### 6.2. Kiểm tra danh sách Test Case
 
 ```powershell
 python -m pytest tests --collect-only -q
 ```
 
-Ghi nhận kết quả thực tế, số test PASS, FAIL và lưu ảnh chụp kết quả tại `docs/screenshots/`.
+### 6.3. Ghi nhận kết quả
+
+- Ghi nhận kết quả thực tế của từng Test Case.
+- Đối chiếu kết quả thực tế với kết quả mong đợi.
+- Tổng hợp số lượng PASS, FAIL và BLOCKED.
+- Lưu ảnh chụp kết quả kiểm thử tại `docs/screenshots/`.
+- Chi tiết kết quả thực thi được trình bày trong `docs/test-report.md`.
 
 ## 7. Tiêu chí đánh giá
 
-- **PASS:** Kết quả thực tế đúng với kết quả mong đợi.
-- **FAIL:** Kết quả thực tế khác kết quả mong đợi.
-- **BLOCKED:** Không thể thực hiện do thiếu điều kiện hoặc môi trường.
+| Trạng thái | Điều kiện |
+|---|---|
+| PASS | Kết quả thực tế đúng với kết quả mong đợi |
+| FAIL | Kết quả thực tế khác kết quả mong đợi |
+| BLOCKED | Không thể thực hiện do thiếu điều kiện hoặc môi trường |
 
 ## 8. Kết quả kiểm thử hiện tại
 
-- Tổng số test case: 30.
+- Tổng số Test Case tự động: 30.
 - Kết quả kiểm thử gần nhất: 30/30 PASS.
+- Số Test Case FAIL: 0.
+- Số Test Case BLOCKED: 0.
 - Chi tiết kết quả và minh chứng được ghi nhận trong `docs/test-report.md`.
-

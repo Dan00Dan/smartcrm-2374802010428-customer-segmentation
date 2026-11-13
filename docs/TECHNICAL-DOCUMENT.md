@@ -4,7 +4,8 @@
 **Student:** Trần Thị Như Quỳnh  
 **Student ID:** 2374802010428  
 **Track:** Data Analyst  
-**Version:** 1.0
+**Version:** 1.3  
+**Updated:** 13 November 2026
 
 ## 1. System Overview
 
@@ -13,6 +14,8 @@ Smart CRM is a data-driven customer analysis system designed to support Marketin
 The system processes customer and order data through an ETL pipeline, stores standardized data in a Data Warehouse, and provides analytical information through a Streamlit dashboard.
 
 The system focuses on improving customer data consistency and supporting customer segmentation based on business rules QT-12.
+
+The system is intended for analytical decision support and local demonstration rather than automated marketing execution.
 
 ## 2. System Architecture
 
@@ -35,7 +38,7 @@ The Smart CRM data pipeline follows these stages:
 
 ### 3.1 Data Extraction
 
-Customer and order data are collected from the available source datasets and loaded into the processing environment.
+Customer and order data are collected from available source datasets and loaded into the processing environment.
 
 ### 3.2 Data Cleaning and Transformation
 
@@ -47,6 +50,8 @@ The ETL process performs:
 - Identification of invalid or incomplete records.
 - Customer identity matching.
 - Classification of valid and rejected orders.
+
+Invalid records are separated from valid records and retained in data quality processing outputs.
 
 ### 3.3 Customer Matching
 
@@ -60,9 +65,11 @@ Matching methods include:
 
 Unresolved customer records are assigned the `UNKNOWN` key and recorded for data quality monitoring.
 
+Potential duplicate customer records are identified for further investigation rather than automatically merged.
+
 ### 3.4 Data Warehouse Loading
 
-The ETL pipeline loads standardized data into the Warehouse.
+The ETL pipeline loads standardized data into the Data Warehouse.
 
 The main tables include:
 
@@ -72,23 +79,33 @@ The main tables include:
 - `data_quality_issues`
 - `customer_duplicate_candidates`
 
+The Warehouse supports customer analysis, order analysis, and data quality monitoring.
+
 ### 3.5 Data Quality Monitoring
 
 The system records unresolved customer identities, potential duplicates, and other data quality issues.
 
 Orders that cannot be validated for customer identity are excluded from customer segmentation calculations.
 
+Data quality information is presented through the dashboard to support investigation and correction.
+
 ### 3.6 Segmentation and Dashboard
 
 The system applies QT-12 business rules to eligible customer data and provides analytical information through the Streamlit dashboard.
 
-Segmentation publication is controlled by source validation status. When validation is incomplete, the analysis period is marked `BLOCKED_SOURCE_VALIDATION`.
+Segmentation publication is controlled by source validation status.
+
+When validation requirements remain incomplete, the analysis period is marked:
+
+`BLOCKED_SOURCE_VALIDATION`
+
+This status represents a business validation restriction rather than an ETL execution failure.
 
 ## 4. Business Logic
 
 ### 4.1 Customer Segmentation – QT-12
 
-Customer segments are assigned according to purchase behavior:
+Customer segments are assigned according to purchase behavior using eligible completed orders.
 
 | Segment | Business Rule |
 |---|---|
@@ -107,17 +124,21 @@ The segmentation function is designed to avoid modifying the original input Data
 
 The system distinguishes between valid and rejected orders.
 
-Invalid records are retained in the data quality processing results instead of silently disappearing.
+Invalid records are retained in data quality processing results instead of silently disappearing.
+
+Only eligible orders are considered for customer segmentation calculations.
 
 ### 4.3 Source Validation Control
 
-The segmentation process must not be treated as validated when the source order completion status or customer identity cannot be sufficiently verified.
+The segmentation process must not be treated as validated when source order completion status or customer identity cannot be sufficiently verified.
 
 The current publication status is:
 
 `BLOCKED_SOURCE_VALIDATION`
 
 This status indicates that source validation requirements remain incomplete.
+
+The system therefore distinguishes successful technical processing from business validation and segmentation publication.
 
 ## 5. Business Impact
 
@@ -141,7 +162,10 @@ Current system limitations include:
 - Source order completion status cannot be fully verified.
 - Customer segmentation publication is currently blocked by source validation.
 - Customer identity matching still requires additional source validation.
+- Production authentication and authorization are not fully implemented.
 - The system is a prototype and is not yet ready for production use with real customer data without additional security and access control measures.
+
+These limitations must be addressed before using the system for production marketing decisions.
 
 ## 7. Data Dictionary
 
@@ -164,11 +188,40 @@ The following tables define the primary Warehouse structures.
 
 Detailed column definitions are provided in `docs/DATA-DICTIONARY.md`.
 
-## 8. Technical Conclusion
+## 8. Testing and Verification
+
+The system's automated tests are executed using pytest.
+
+Test command:
+
+```powershell
+python -m pytest tests -v
+```
+
+Latest recorded verification:
+
+**Verification Date:** 13 November 2026
+
+| Metric | Result |
+|---|---|
+| Total automated tests | 30 |
+| Passed | 30 |
+| Failed | 0 |
+| Blocked | 0 |
+| Status | PASS |
+
+The test results support the verification of ETL functions, data validation, and business logic.
+
+Detailed test cases and execution results are documented in `docs/test-plan.md` and `docs/test-report.md`.
+
+## 9. Technical Conclusion
 
 Smart CRM implements a data processing and analytical workflow for customer profiling and segmentation.
 
 The ETL pipeline, Data Warehouse, data quality monitoring, and dashboard provide the technical foundation for customer analysis.
 
-The system has passed its documented automated tests. However, segmentation publication remains blocked until the outstanding source validation requirements are resolved.
+Automated testing has achieved 30/30 PASS in the latest recorded execution.
 
+However, segmentation publication remains blocked until outstanding source validation requirements are resolved.
+
+The system is suitable for local demonstration and analytical experimentation but requires further data validation and security improvements before production deployment.
