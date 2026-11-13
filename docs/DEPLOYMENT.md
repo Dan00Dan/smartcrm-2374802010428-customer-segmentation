@@ -1,11 +1,12 @@
-# Smart CRM - Deployment Guide
+# Smart CRM – Deployment Guide
 
 ## 1. System Requirements
 
 - Operating System: Windows 10/11, Linux, or macOS
 - Docker Desktop with Docker Compose
-- Internet connection for downloading Docker images and dependencies
+- Git
 - Minimum 4 GB RAM recommended
+- Internet connection for downloading Docker images and dependencies
 
 ## 2. Prerequisites
 
@@ -16,7 +17,7 @@ Install the following software:
 
 Verify installation:
 
-```bash
+```powershell
 docker --version
 docker compose version
 git --version
@@ -24,52 +25,28 @@ git --version
 
 ## 3. Clone the Repository
 
-```bash
+```powershell
 git clone https://github.com/Dan00Dan/smartcrm-2374802010428-customer-segmentation.git
 cd smartcrm-2374802010428-customer-segmentation
 ```
 
-## 4. Environment Configuration
+## 4. Deploy with Docker Compose
 
-Create the environment file:
-
-```bash
-cp .env.example .env
-```
-
-On Windows PowerShell:
+Build and start the application:
 
 ```powershell
-Copy-Item .env.example .env
-```
-
-Review `.env` and configure the required environment variables.
-
-Do not commit `.env` to Git.
-
-## 5. Deploy with Docker
-
-Build the Docker image:
-
-```bash
-docker compose build
-```
-
-Start the application:
-
-```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 Check container status:
 
-```bash
+```powershell
 docker compose ps
 ```
 
-The container should report a healthy status.
+The container should report `healthy`.
 
-## 6. Access the Application
+## 5. Access the Application
 
 Open the following URL in a web browser:
 
@@ -77,15 +54,25 @@ http://localhost:8501
 
 The Smart CRM dashboard should load successfully.
 
-## 7. Stop the Application
+## 6. Verify Deployment
 
-```bash
+- Confirm the Docker container is running.
+- Confirm container health status is `healthy`.
+- Confirm dashboard is accessible at `http://localhost:8501`.
+- Confirm required warehouse CSV files exist in `data/warehouse/`.
+- Confirm dashboard displays the available customer segmentation data.
+
+## 7. Stop and Restart the Application
+
+Stop the application:
+
+```powershell
 docker compose down
 ```
 
-To restart:
+Restart:
 
-```bash
+```powershell
 docker compose up -d
 ```
 
@@ -95,7 +82,7 @@ docker compose up -d
 
 Check logs:
 
-```bash
+```powershell
 docker compose logs --tail 50
 ```
 
@@ -110,3 +97,10 @@ Verify that the required warehouse CSV files exist in `data/warehouse/`.
 ### Docker is not running
 
 Start Docker Desktop and wait until the Docker Engine is ready.
+
+## 9. Deployment Limitations
+
+- This deployment is intended for local demonstration and testing.
+- Production authentication and authorization are not fully implemented.
+- Customer data should not be exposed publicly without appropriate access controls.
+- Production deployment requires additional security configuration.
