@@ -62,7 +62,7 @@ Dự án sử dụng hai tệp dữ liệu:
 
 Hai tệp dữ liệu đầu vào không được đưa lên repository do có thể chứa thông tin cá nhân. Khi clone dự án sang máy hoặc thư mục mới, cần tự chuẩn bị dữ liệu được phép sử dụng và đặt đúng tên, đúng vị trí nêu trên.
 
-Nếu chưa có dữ liệu đầu vào, hãy chuẩn bị dữ liệu trước khi chạy pipeline và ETL. Không tự ý tải dữ liệu khách hàng lên repository công khai.
+Nếu chưa có dữ liệu đầu vào, cần chuẩn bị dữ liệu trước khi chạy pipeline và ETL. Không tự ý tải dữ liệu khách hàng lên repository công khai.
 
 ### Bước 5. Chạy pipeline xử lý dữ liệu
 
@@ -70,11 +70,18 @@ Nếu chưa có dữ liệu đầu vào, hãy chuẩn bị dữ liệu trước 
 python -m src.pipeline
 ```
 
-Pipeline đọc dữ liệu, thống kê chất lượng, chuẩn hóa ngày tháng và số tiền, phân loại dữ liệu hợp lệ hoặc bị từ chối, sau đó lưu kết quả theo cấu hình dự án.
+Pipeline thực hiện các công việc:
+
+- Đọc dữ liệu khách hàng và đơn hàng.
+- Thống kê thông tin tổng quan dữ liệu.
+- Chuẩn hóa ngày tháng và thành tiền.
+- Phân loại dữ liệu hợp lệ và dữ liệu bị từ chối.
+- Kiểm tra chất lượng dữ liệu.
+- Lưu dữ liệu xử lý và báo cáo chất lượng.
 
 Các kết quả chính:
 
-- `data/processed/orders_normalized.csv`: dữ liệu đơn hàng sau xử lý theo các tiêu chí hiện tại.
+- `data/processed/orders_normalized.csv`: dữ liệu đơn hàng sau xử lý.
 - `data/processed/orders_reject.csv`: dữ liệu bị từ chối kèm lý do.
 - `docs/bao-cao-chat-luong.md`: báo cáo chất lượng dữ liệu.
 
@@ -84,7 +91,7 @@ Các kết quả chính:
 python -m src.etl.load_warehouse
 ```
 
-Các bảng kho được tạo trong `data/warehouse/`:
+Module nạp kho sử dụng dữ liệu đã xử lý để tạo các bảng kho trong `data/warehouse/`:
 
 - `dim_customer.csv`: dữ liệu chiều khách hàng.
 - `dim_period.csv`: dữ liệu chiều thời gian.
@@ -92,6 +99,8 @@ Các bảng kho được tạo trong `data/warehouse/`:
 - `data_quality_issues.csv`: các vấn đề chất lượng dữ liệu.
 
 Báo cáo nạp kho được lưu tại `docs/bao-cao-nap-kho.md`.
+
+**Lưu ý:** Bước 5 và Bước 6 cho phép chạy riêng từng giai đoạn. Để chạy toàn bộ pipeline xử lý dữ liệu và nạp kho theo đúng thứ tự tự động, sử dụng lệnh `python run_pipeline.py` tại Mục 11.
 
 ### Bước 7. Chạy dashboard
 
@@ -242,9 +251,14 @@ Sau khi chuẩn bị dữ liệu đầu vào và kích hoạt môi trường ả
 python run_pipeline.py
 ```
 
-Lệnh này lần lượt thực hiện các bước xử lý dữ liệu và nạp dữ liệu vào kho theo cách triển khai hiện tại.
+Lệnh này tự động thực hiện lần lượt:
 
-Nếu một bước thất bại, cần kiểm tra thông báo lỗi và kết quả đầu ra của bước đó trước khi tiếp tục.
+1. Chạy `src.pipeline` để xử lý và kiểm tra chất lượng dữ liệu.
+2. Chạy `src.etl.load_warehouse` để nạp dữ liệu vào kho.
+
+Nếu một bước thất bại, pipeline sẽ dừng và hiển thị thông báo lỗi để người thực hiện kiểm tra.
+
+**Đây là lệnh được khuyến nghị khi muốn thực hiện toàn bộ quy trình xử lý dữ liệu và nạp kho.**
 
 ## 12. Nhật ký lỗi, thay đổi thiết kế và khai báo AI
 
