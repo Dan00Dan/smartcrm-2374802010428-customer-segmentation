@@ -93,7 +93,7 @@ Kiểm tra tính đúng đắn, độ tin cậy và khả năng tái lập của
 | Luồng đúng | Chuẩn hóa dữ liệu hợp lệ, nạp dữ liệu, xử lý đơn hàng và phân khúc hợp lệ |
 | Kiểm thử biên | Thành tiền bằng 0; ngưỡng chi tiêu và số lượng đơn theo QT-12 |
 | Dữ liệu sai | Ngày không hợp lệ, thành tiền không hợp lệ, thiếu cột bắt buộc |
-| Bảo mật / chất lượng dữ liệu | Khóa trùng, mã khách hàng chưa xác định, dữ liệu thiếu và giao dịch lỗi |
+| Chất lượng dữ liệu | Khóa trùng, mã khách hàng chưa xác định, dữ liệu thiếu và giao dịch lỗi |
 | Tái lập | Nạp dữ liệu nhiều lần không tạo bản ghi trùng; kiểm tra tính toàn vẹn DataFrame đầu vào |
 
 ## 6. Phương pháp thực thi

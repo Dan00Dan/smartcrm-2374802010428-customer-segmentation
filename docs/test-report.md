@@ -58,6 +58,7 @@
 ## 5. Kiểm thử phân khúc QT-12
 
 Các trường hợp đã kiểm thử:
+
 - VIP theo ngưỡng chi tiêu.
 - VIP theo số lượng đơn.
 - Thường xuyên theo ngưỡng chi tiêu.
@@ -73,10 +74,10 @@ Các trường hợp đã kiểm thử:
 ## 6. Bằng chứng kiểm thử
 
 - `docs/screenshots/TEST-01-all-tests-pass.png`: kết quả toàn bộ test suite.
-- `docs/screenshots/TEST-02-QT12-pass.png`: kết quả test QT-12.
+- `docs/screenshots/TEST-02-QT12-pass.png`: kết quả kiểm thử QT-12.
 
 ## 7. Kết luận
 
-Lần kiểm thử ngày 13/11/2026 đạt 30/30 PASS, không có FAIL hoặc BLOCKED. Các chức năng được kiểm tra gồm chuẩn hóa dữ liệu, nạp kho, xử lý đơn hàng, chất lượng dữ liệu và phân khúc khách hàng QT-12.
+Lần kiểm thử ngày 13/11/2026 đạt 30/30 PASS, không có FAIL hoặc BLOCKED. Các chức năng được kiểm tra bao gồm chuẩn hóa dữ liệu, nạp kho, xử lý đơn hàng, chất lượng dữ liệu và phân khúc khách hàng theo QT-12.
 
 Kết quả phản ánh trạng thái chương trình tại thời điểm thực hiện kiểm thử.
