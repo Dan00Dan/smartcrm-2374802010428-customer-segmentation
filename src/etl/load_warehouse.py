@@ -1,5 +1,8 @@
 ﻿
 from pathlib import Path
+import hashlib
+import hmac
+import os
 import re
 import unicodedata
 
@@ -7,10 +10,37 @@ import pandas as pd
 
 
 # =========================================================
-# 0. CẤU HÌNH VÀ HÀM CHUẨN HÓA
+# 0. CẤU HÌNH VÀ HÀM HỖ TRỢ
 # =========================================================
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[2]
+
+
+def get_pseudonym_secret():
+    """Lấy khóa bí mật từ biến môi trường."""
+    secret = os.environ.get("CRM_PSEUDONYM_SECRET", "")
+
+    if len(secret) < 32:
+        raise RuntimeError(
+            "CRM_PSEUDONYM_SECRET chưa được thiết lập "
+            "hoặc có độ dài dưới 32 ký tự."
+        )
+
+    return secret.encode("utf-8")
+
+
+def pseudonymize_id(value, secret):
+    """Chuyển mã hồ sơ gốc thành mã giả danh ổn định."""
+    if pd.isna(value) or str(value).strip() in ("", "UNKNOWN"):
+        return "UNKNOWN"
+
+    digest = hmac.new(
+        secret,
+        str(value).strip().encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+
+    return f"C_{digest[:20]}"
 
 
 def normalize_phone(value):
@@ -34,10 +64,7 @@ def normalize_name(value):
         return ""
 
     text = str(value).strip().lower()
-
-    # Chuyển đ thành d trước khi loại dấu Unicode
     text = text.replace("đ", "d")
-
     text = unicodedata.normalize("NFD", text)
 
     text = "".join(
@@ -61,9 +88,10 @@ def normalize_text(value):
 # 1. NẠP KHO DỮ LIỆU
 # =========================================================
 
-def load_warehouse(root=None):
+def load_warehouse(root=None, orders_df=None):
 
     root = Path(root) if root is not None else Path.cwd()
+    secret = get_pseudonym_secret()
 
     customers_file = root / "data" / "raw" / "customers_raw.csv"
     orders_file = root / "data" / "processed" / "orders_normalized.csv"
@@ -71,32 +99,35 @@ def load_warehouse(root=None):
     warehouse_dir = root / "data" / "warehouse"
     docs_dir = root / "docs"
 
-    # ---------------------------------------------------------
-    # 1.1 KIỂM TRA FILE NGUỒN
-    # ---------------------------------------------------------
-
     if not customers_file.exists():
         raise FileNotFoundError(
             f"Không tìm thấy dữ liệu khách hàng: {customers_file}"
         )
 
-    if not orders_file.exists():
-        raise FileNotFoundError(
-            f"Không tìm thấy dữ liệu đơn hàng: {orders_file}"
+    customers = pd.read_csv(
+        customers_file,
+        dtype=str,
+        keep_default_na=False,
+    )
+
+    # Ưu tiên dữ liệu truyền trực tiếp từ pipeline.
+    # Chỉ đọc CSV khi chạy load_warehouse độc lập.
+    if orders_df is not None:
+        orders = orders_df.copy()
+    else:
+        if not orders_file.exists():
+            raise FileNotFoundError(
+                f"Không tìm thấy dữ liệu đơn hàng: {orders_file}"
+            )
+
+        orders = pd.read_csv(
+            orders_file,
+            dtype=str,
+            keep_default_na=False,
         )
 
-    customers = pd.read_csv(customers_file, dtype=str)
-    orders = pd.read_csv(orders_file, dtype=str)
-
-    # Kiểm tra thiếu mã hồ sơ khách hàng
-    if customers["record_id"].fillna("").str.strip().eq("").any():
-        raise ValueError("Có hồ sơ khách hàng thiếu record_id.")
-
-    # Kiểm tra trùng mã hồ sơ khách hàng
-    if customers["record_id"].duplicated().any():
-        raise ValueError("Duplicate customer record_id detected")
     # ---------------------------------------------------------
-    # 1.2 KIỂM TRA CỘT BẮT BUỘC
+    # 1.1 KIỂM TRA CỘT BẮT BUỘC
     # ---------------------------------------------------------
 
     required_customer = {
@@ -125,9 +156,9 @@ def load_warehouse(root=None):
             f"orders_normalized.csv thiếu cột: {sorted(missing)}"
         )
 
-    # =========================================================
-    # 2. DIMENSION KHÁCH HÀNG
-    # =========================================================
+    # ---------------------------------------------------------
+    # 1.2 KIỂM TRA MÃ HỒ SƠ KHÁCH HÀNG
+    # ---------------------------------------------------------
 
     customers["record_id"] = (
         customers["record_id"]
@@ -140,7 +171,11 @@ def load_warehouse(root=None):
         raise ValueError("Có hồ sơ khách hàng thiếu record_id.")
 
     if customers["record_id"].duplicated().any():
-        raise ValueError("record_id bị trùng; dừng nạp.")
+        raise ValueError("Duplicate customer record_id detected")
+
+    # =========================================================
+    # 2. DIMENSION KHÁCH HÀNG VÀ GHÉP HỒ SƠ
+    # =========================================================
 
     customers["phone_norm"] = customers["so_dien_thoai"].map(
         normalize_phone
@@ -148,16 +183,6 @@ def load_warehouse(root=None):
 
     customers["name_norm"] = customers["ho_ten"].map(
         normalize_name
-    )
-
-    # Giữ nguyên toàn bộ hồ sơ khách hàng gốc.
-    customer_dim = customers[
-        ["record_id", "ho_ten"]
-    ].rename(
-        columns={
-            "record_id": "customer_key",
-            "ho_ten": "full_name",
-        }
     )
 
     # ---------------------------------------------------------
@@ -183,7 +208,7 @@ def load_warehouse(root=None):
     )
 
     # ---------------------------------------------------------
-    # 2.2 NHÓM HỒ SƠ THEO SĐT + TÊN CHUẨN HÓA
+    # 2.2 NHÓM HỒ SƠ THEO SĐT + TÊN
     # ---------------------------------------------------------
 
     valid_pairs = customers.loc[
@@ -191,7 +216,6 @@ def load_warehouse(root=None):
         & customers["name_norm"].ne("")
     ].copy()
 
-    # Sắp xếp để chọn đại diện ổn định.
     valid_pairs["_record_sort"] = pd.to_numeric(
         valid_pairs["record_id"],
         errors="coerce",
@@ -202,7 +226,6 @@ def load_warehouse(root=None):
         na_position="last",
     )
 
-    # Thống kê từng nhóm SĐT + tên.
     pair_groups = (
         valid_pairs.groupby(
             ["phone_norm", "name_norm"],
@@ -211,12 +234,6 @@ def load_warehouse(root=None):
         .agg(
             candidate_count=("record_id", "nunique"),
             representative_record_id=("record_id", "first"),
-            candidate_record_ids=(
-                "record_id",
-                lambda values: "|".join(
-                    sorted(set(values.astype(str)))
-                ),
-            ),
         )
     )
 
@@ -277,7 +294,7 @@ def load_warehouse(root=None):
         pair_groups["address_distinct_count"] = 0
 
     # ---------------------------------------------------------
-    # 2.2.3 ÁNH XẠ SĐT + TÊN VỀ HỒ SƠ ĐẠI DIỆN
+    # 2.3 ÁNH XẠ SĐT + TÊN VỀ HỒ SƠ ĐẠI DIỆN
     # ---------------------------------------------------------
 
     phone_name_to_customer = {
@@ -286,36 +303,55 @@ def load_warehouse(root=None):
         for _, row in pair_groups.iterrows()
     }
 
+    pair_count_lookup = {
+        (row["phone_norm"], row["name_norm"]):
+        row["candidate_count"]
+        for _, row in pair_groups.iterrows()
+    }
+
     # ---------------------------------------------------------
-    # 2.3 BẢNG KIỂM TRA HỒ SƠ NGHI TRÙNG
+    # 2.4 BẢNG HỒ SƠ NGHI TRÙNG AN TOÀN
     # ---------------------------------------------------------
 
     duplicate_candidates = pair_groups.loc[
         pair_groups["candidate_count"] > 1
     ].copy()
 
+    # Chỉ xuất mã giả danh và số liệu tổng hợp.
+    # Không xuất SĐT, tên, email, địa chỉ hoặc record_id gốc.
+
+    duplicate_candidates["representative_customer_key"] = (
+        duplicate_candidates["representative_record_id"].map(
+            lambda value: pseudonymize_id(value, secret)
+        )
+    )
+
     duplicate_candidates = duplicate_candidates[
         [
-            "phone_norm",
-            "name_norm",
+            "representative_customer_key",
             "candidate_count",
-            "representative_record_id",
-            "candidate_record_ids",
             "email_distinct_count",
             "address_distinct_count",
         ]
-    ]
+    ].copy()
 
     # ---------------------------------------------------------
-    # 2.4 THÊM KHÁCH HÀNG UNKNOWN
+    # 2.5 TẠO DIMENSION KHÁCH HÀNG GIẢ DANH
     # ---------------------------------------------------------
 
-    unknown_row = pd.DataFrame(
-        [{
-            "customer_key": "UNKNOWN",
-            "full_name": "Không xác định",
-        }]
+    customer_dim = pd.DataFrame({
+        "customer_key": customers["record_id"].map(
+            lambda value: pseudonymize_id(value, secret)
+        )
+    })
+
+    customer_dim = customer_dim.drop_duplicates(
+        subset=["customer_key"]
     )
+
+    unknown_row = pd.DataFrame([
+        {"customer_key": "UNKNOWN"}
+    ])
 
     customer_dim = pd.concat(
         [unknown_row, customer_dim],
@@ -326,9 +362,9 @@ def load_warehouse(root=None):
     # 3. CHUẨN HÓA VÀ GHÉP ĐƠN HÀNG
     # =========================================================
 
-# ---------------------------------------------------------
-# 3.0 TẠO VÀ KIỂM TRA KHÓA ĐƠN HÀNG
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # 3.1 TẠO VÀ KIỂM TRA KHÓA ĐƠN HÀNG
+    # ---------------------------------------------------------
 
     for column in ["ma_cua_hang", "ma_don"]:
         orders[column] = (
@@ -350,14 +386,13 @@ def load_warehouse(root=None):
         + orders["ma_don"]
     )
 
-    # Giữ tên khóa cũ để tương thích
     orders["store_order_key"] = orders["order_business_key"]
 
-    # Kiểm tra trùng khóa đơn hàng
     if orders["order_business_key"].duplicated().any():
         raise ValueError("Duplicate order_business_key detected")
+
     # ---------------------------------------------------------
-    # 3.1 CHUẨN HÓA ĐIỆN THOẠI VÀ TÊN
+    # 3.2 CHUẨN HÓA ĐIỆN THOẠI VÀ TÊN
     # ---------------------------------------------------------
 
     orders["phone_norm"] = orders["so_dien_thoai"].map(
@@ -372,7 +407,7 @@ def load_warehouse(root=None):
         orders["name_norm"] = ""
 
     # ---------------------------------------------------------
-    # 3.2 BƯỚC 1: GHÉP BẰNG SĐT DUY NHẤT
+    # 3.3 BƯỚC 1: GHÉP BẰNG SĐT DUY NHẤT
     # ---------------------------------------------------------
 
     orders["customer_key"] = (
@@ -389,7 +424,7 @@ def load_warehouse(root=None):
     ] = "PHONE_UNIQUE"
 
     # ---------------------------------------------------------
-    # 3.3 BƯỚC 2: GHÉP BẰNG SĐT + TÊN
+    # 3.4 BƯỚC 2: GHÉP BẰNG SĐT + TÊN
     # ---------------------------------------------------------
 
     unresolved = orders["customer_key"].isna()
@@ -410,13 +445,6 @@ def load_warehouse(root=None):
         unresolved,
         "customer_key",
     ] = matched_by_pair
-
-    # Xác định nhóm ghép là duy nhất hay nghi trùng.
-    pair_count_lookup = {
-        (row["phone_norm"], row["name_norm"]):
-        row["candidate_count"]
-        for _, row in pair_groups.iterrows()
-    }
 
     matched_pair_indices = orders.index[
         unresolved & orders["customer_key"].notna()
@@ -441,13 +469,16 @@ def load_warehouse(root=None):
             ] = "PHONE_NAME_UNIQUE"
 
     # ---------------------------------------------------------
-    # 3.4 BƯỚC 3: GÁN UNKNOWN
+    # 3.5 BƯỚC 3: GIẢ DANH HÓA VÀ GÁN UNKNOWN
     # ---------------------------------------------------------
 
     orders["customer_key"] = (
         orders["customer_key"]
-        .fillna("UNKNOWN")
-        .astype(str)
+        .map(
+            lambda value: pseudonymize_id(value, secret)
+            if pd.notna(value)
+            else "UNKNOWN"
+        )
     )
 
     # =========================================================
@@ -470,7 +501,6 @@ def load_warehouse(root=None):
         orders["order_date"].dt.strftime("%Y-%m")
     )
 
-    # Chưa có dữ liệu trạng thái đơn hoàn tất.
     orders["order_status"] = "UNKNOWN"
     orders["segment_publishable"] = False
 
@@ -498,7 +528,7 @@ def load_warehouse(root=None):
         }
     )
 
-    # Tương thích các bài test cũ.
+    # Hai cột sử dụng cùng một mã giả danh.
     fact_order["customer_id"] = fact_order["customer_key"]
 
     # =========================================================
@@ -651,9 +681,11 @@ def load_warehouse(root=None):
         f"- Khóa đơn hàng trùng trong kho: {fact_order['order_business_key'].duplicated().sum()}",
         "- Trạng thái đơn hoàn tất: chưa có trong dữ liệu nguồn.",
         "- Công bố phân khúc: ĐANG CHẶN.",
+        "- Mã khách hàng: đã giả danh hóa bằng HMAC-SHA256.",
+        "- Dữ liệu định danh trực tiếp: không xuất vào các bảng Warehouse.",
         "- Cách nạp: ghi snapshot; chạy lại không cộng dồn.",
         "",
-        "Lưu ý: nhóm hồ sơ nghi trùng được chọn record_id đại diện để ghép đơn.",
+        "Lưu ý: nhóm hồ sơ nghi trùng được chọn mã hồ sơ đại diện để ghép đơn.",
         "Đây chưa phải kết luận các hồ sơ là cùng một người.",
         "Khóa cửa hàng + mã đơn là khóa kỹ thuật tạm dùng theo dữ liệu hiện có.",
     ]
@@ -669,7 +701,7 @@ def load_warehouse(root=None):
     print(f"So van de chat luong du lieu: {len(issues):,}")
     print(f"So nhom nghi trung: {len(duplicate_candidates):,}")
     print(f"So don UNKNOWN: {unknown_count:,}")
-    print("Cong bo phan khuc: READY")
+    print("Cong bo phan khuc: DANG CHAN")
     print(f"Ket qua: {warehouse_dir}")
 
 

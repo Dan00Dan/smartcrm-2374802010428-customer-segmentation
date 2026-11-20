@@ -1,0 +1,10 @@
+﻿column,total_rows,non_empty,missing,completeness_percent,valid,validity_percent,consistent,consistency_percent
+order_id,26000,26000,0,100.0,,,,
+ma_don,26000,26000,0,100.0,,,,
+ma_cua_hang,26000,26000,0,100.0,,,,
+ngay,26000,25886,114,99.56,25886.0,100.0,25607.0,98.92
+ten_khach,26000,26000,0,100.0,,,,
+so_dien_thoai,26000,24512,1488,94.28,,,,
+thanh_tien,26000,25721,279,98.93,25721.0,100.0,25607.0,99.56
+nhan_vien,26000,24989,1011,96.11,,,,
+ghi_chu,26000,13039,12961,50.15,,,,
