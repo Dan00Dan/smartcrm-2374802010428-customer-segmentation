@@ -1,35 +1,48 @@
-﻿
-# BUG LOG – SMART CRM
+﻿# BUG LOG – SMART CRM
 
 **Dự án:** Smart CRM – L1: Hồ sơ khách hàng và phân khúc  
 **Sinh viên:** Trần Thị Như Quỳnh  
 **MSSV:** 2374802010428  
 **Track:** Data Analyst  
-**Phiên bản:** 1.3  
-**Ngày cập nhật:** 13/11/2026
+**Phiên bản:** 2.0
 
-## 1. Danh sách lỗi
+## 1. Danh sách lỗi đã xử lý
 
 | Bug ID | Mô tả lỗi | Severity | Nguyên nhân | Cách xử lý | Trạng thái | Commit liên kết |
 |---|---|---|---|---|---|---|
-| BUG-01 | Không xác định được khách hàng cho một số đơn hàng | Major | Dữ liệu nguồn chưa đủ thông tin để ánh xạ chính xác đơn hàng với hồ sơ khách hàng | Gán khóa khách hàng `UNKNOWN`, ghi nhận vấn đề chất lượng dữ liệu; không tự ghép theo tên | Đã xử lý an toàn; chờ xác minh dữ liệu nguồn | N/A – Vấn đề dữ liệu nguồn |
-| BUG-02 | Chưa xác minh được trạng thái hoàn thành của đơn hàng | Major | Dữ liệu nguồn chưa có thông tin trạng thái đơn hàng đáng tin cậy | Đánh dấu nguồn chưa đủ điều kiện và chặn công bố phân khúc | Đang chờ bổ sung hoặc xác minh dữ liệu | N/A – Vấn đề dữ liệu nguồn |
-| BUG-03 | Một số đơn hàng có dữ liệu ngày hoặc thành tiền không hợp lệ | Minor | Giá trị nguồn bị thiếu hoặc không đúng định dạng yêu cầu | Tách đơn hàng không hợp lệ sang danh sách bị từ chối và ghi rõ lý do | Đã xử lý trong pipeline | N/A – Xử lý bằng pipeline |
-| BUG-04 | Lỗi xử lý cột ngày khi nạp dữ liệu vào kho | Major | Module nạp kho tham chiếu `order_date` trước khi chuẩn hóa dữ liệu ngày từ cột nguồn `ngay` | Chuẩn hóa dữ liệu ngày bằng `pd.to_datetime()`, sử dụng `format="mixed"`, `dayfirst=True` và `errors="coerce"` | Đã sửa; bộ kiểm thử hiện tại đạt 30/30 PASS | `289f6e1` – Fix warehouse order date parsing |
+| BUG-01 | Hồ sơ khách hàng thiếu hoặc trùng `record_id` vẫn có thể được đưa vào kho dữ liệu | Major | Phiên bản ETL trước chưa kiểm tra ID rỗng và ID trùng trước khi tạo dimension khách hàng | Bổ sung kiểm tra `record_id` rỗng và trùng; dừng nạp dữ liệu khi phát hiện vi phạm | Đã sửa; có kiểm thử hồi quy | `e7def4a` |
+| BUG-02 | Đơn hàng có ngày không hợp lệ không được ghi nhận đầy đủ trong báo cáo chất lượng dữ liệu | Major | Giá trị ngày không hợp lệ được chuyển thành `NaT`, nhưng chưa được ghi thành một issue riêng | Bổ sung kiểm tra ngày và ghi nhận mã lỗi `INVALID_ORDER_DATE` vào bảng `data_quality_issues.csv` | Đã sửa; có kiểm thử hồi quy | `e7def4a` |
+| BUG-03 | Đơn hàng có thành tiền không hợp lệ chưa được chuẩn hóa và truy vết đầy đủ | Major | Giá trị thành tiền từ nguồn chưa được chuyển đổi và kiểm tra kiểu số trước khi đưa vào kho | Sử dụng `pd.to_numeric(errors="coerce")`; ghi nhận `INVALID_ORDER_AMOUNT` khi giá trị không hợp lệ | Đã sửa; có kiểm thử hồi quy | `e7def4a` |
+| BUG-04 | Một số định dạng ngày tháng không được phân tích chính xác khi nạp dữ liệu vào kho | Major | Chuyển đổi ngày chưa chỉ định chế độ xử lý nhiều định dạng và thứ tự ngày/tháng | Bổ sung `format="mixed"`, `dayfirst=True` và `errors="coerce"` trong `pd.to_datetime()` | Đã sửa; có commit khắc phục | `289f6e1` |
 
-## 2. Quy ước Severity
+## 2. Kiểm thử xác nhận
 
-| Severity | Ý nghĩa |
-|---|---|
-| Critical | Lỗi nghiêm trọng khiến hệ thống không thể sử dụng hoặc gây mất dữ liệu nghiêm trọng |
-| Major | Lỗi ảnh hưởng đáng kể đến quy trình hoặc kết quả nghiệp vụ |
-| Minor | Lỗi phạm vi nhỏ, có cơ chế xử lý an toàn hoặc ít ảnh hưởng đến kết quả |
+Các trường hợp được kiểm thử trong `tests/test_load_warehouse.py`:
 
-## 3. Ghi chú
+- `test_missing_customer_record_id_is_rejected`: xác nhận từ chối hồ sơ thiếu mã.
+- `test_duplicate_customer_record_id_is_rejected`: xác nhận từ chối mã hồ sơ trùng.
+- `test_invalid_order_date_is_recorded_as_issue`: xác nhận ghi nhận ngày không hợp lệ.
+- `test_invalid_order_amount_is_recorded_as_issue`: xác nhận ghi nhận thành tiền không hợp lệ.
 
-- Các vấn đề dữ liệu chưa xác minh không được xem là đã khắc phục hoàn toàn chỉ vì pipeline xử lý an toàn.
-- BUG-01 và BUG-02 vẫn cần bổ sung hoặc xác minh dữ liệu nguồn.
-- BUG-03 được xử lý bằng cơ chế kiểm tra và phân loại dữ liệu không hợp lệ.
-- BUG-04 đã được sửa và kiểm tra lại bằng bộ kiểm thử tự động.
-- Commit liên kết được ghi nhận khi xác định được commit trực tiếp xử lý lỗi.
-- Các vấn đề dữ liệu nguồn không có commit sửa dữ liệu được ghi là `N/A`.
+Kiểm thử toàn bộ dự án được thực hiện bằng lệnh:
+
+```bash
+python -m pytest tests -v
+```
+
+Kết quả lần chạy gần nhất: **30 passed, 0 failed**.
+
+## 3. Các hạn chế dữ liệu nguồn chưa được khắc phục hoàn toàn
+
+| Vấn đề | Nguyên nhân | Biện pháp hiện tại |
+|---|---|---|
+| Không xác định được khách hàng của một số đơn hàng | Số điện thoại không khớp hoặc không đủ điều kiện ánh xạ duy nhất | Gán `UNKNOWN`, ghi nhận vấn đề chất lượng dữ liệu |
+| Chưa xác minh được trạng thái hoàn tất của đơn hàng | Dữ liệu nguồn chưa cung cấp trạng thái đáng tin cậy | Đặt trạng thái `UNKNOWN`, chặn công bố phân khúc |
+
+Hai vấn đề trên là hạn chế của dữ liệu nguồn, chưa thể xem là lỗi đã khắc phục hoàn toàn. Hệ thống tiếp tục ghi nhận và kiểm soát để tránh đưa dữ liệu chưa xác minh vào kết quả phân khúc.
+
+## 4. Kết luận
+
+Các lỗi liên quan đến kiểm tra khóa khách hàng, ghi nhận dữ liệu ngày/thành tiền không hợp lệ và phân tích định dạng ngày đã được xử lý bằng các thay đổi mã nguồn có commit liên kết và kiểm thử xác nhận.
+
+Các hạn chế phụ thuộc vào dữ liệu nguồn được ghi nhận riêng, không tự động giả định hoặc tự sửa dữ liệu khi chưa có căn cứ.
