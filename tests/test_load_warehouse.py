@@ -1,4 +1,5 @@
-﻿import tempfile
+﻿
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -194,6 +195,37 @@ class TestLoadWarehouse(unittest.TestCase):
         self.assertEqual(
             invalid_amount_issues.iloc[0]["order_id_source"],
             "HD001",
+        )
+
+    def test_mixed_order_date_formats_are_parsed_correctly(self):
+        orders = self.orders.copy()
+
+        orders["ngay"] = [
+            "31/01/2026",
+            "2026-02-02",
+        ]
+
+        orders.to_csv(
+            self.root / "data" / "processed" / "orders_normalized.csv",
+            index=False,
+        )
+
+        warehouse.load_warehouse()
+
+        fact_orders = pd.read_csv(
+            self.root / "data" / "warehouse" / "fact_orders.csv"
+        )
+
+        dates = fact_orders.set_index("order_id_source")["order_date"]
+
+        self.assertEqual(
+            pd.to_datetime(dates.loc["HD001"]),
+            pd.Timestamp("2026-01-31"),
+        )
+
+        self.assertEqual(
+            pd.to_datetime(dates.loc["HD002"]),
+            pd.Timestamp("2026-02-02"),
         )
 
 
