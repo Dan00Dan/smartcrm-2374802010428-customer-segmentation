@@ -1,136 +1,191 @@
 # TEST PLAN – SMART CRM
 
-**Dự án:** Smart CRM – L1: Hồ sơ khách hàng và phân khúc  
 **Sinh viên:** Trần Thị Như Quỳnh  
 **MSSV:** 2374802010428  
 **Track:** Data Analyst  
-**Phiên bản:** 1.3  
-**Ngày cập nhật:** 13/11/2026
+**Phiên bản:** 1.5  
+**Ngày cập nhật:** 22/11/2026
+
+---
 
 ## 1. Mục tiêu kiểm thử
 
-Kiểm tra tính đúng đắn, độ tin cậy và khả năng tái lập của quy trình xử lý dữ liệu khách hàng, đơn hàng, chuẩn hóa dữ liệu, nạp dữ liệu vào kho và phân khúc khách hàng theo QT-12.
+Tài liệu xác định phạm vi, phương pháp và các trường hợp kiểm thử cho hệ thống Smart CRM, tập trung vào các chức năng:
+
+- Tiếp nhận và xử lý dữ liệu khách hàng, đơn hàng.
+- Chuẩn hóa dữ liệu đầu vào và nạp dữ liệu vào Data Warehouse.
+- Kiểm tra chất lượng dữ liệu (Data Quality).
+- Xử lý dữ liệu ngày đơn hàng và các giá trị không hợp lệ.
+- Ẩn danh thông tin khách hàng bằng HMAC-SHA256.
+- Tính toán và phân khúc khách hàng theo quy tắc QT-12.
+- Kiểm thử hồi quy sau khi sửa lỗi.
 
 ## 2. Phạm vi kiểm thử
 
-- Chuẩn hóa ngày tháng và thành tiền.
-- Kiểm tra dữ liệu đầu vào hợp lệ, thiếu và sai định dạng.
-- Kiểm tra dữ liệu trùng lặp và khóa nghiệp vụ.
-- Kiểm tra xử lý đơn hàng hợp lệ và không hợp lệ.
-- Kiểm tra khách hàng chưa xác định.
-- Kiểm tra khả năng nạp dữ liệu nhiều lần.
-- Kiểm tra tính nhất quán dữ liệu kho.
-- Kiểm tra logic phân khúc khách hàng theo QT-12.
-- Kiểm tra thứ tự ưu tiên phân khúc và tính toàn vẹn dữ liệu đầu vào.
+### 2.1. Trong phạm vi
 
-## 3. Môi trường kiểm thử
+| STT | Chức năng | Nội dung kiểm thử |
+|---|---|---|
+| 1 | Data Loading | Đọc và nạp dữ liệu khách hàng, đơn hàng |
+| 2 | Data Normalization | Chuẩn hóa dữ liệu, kiểu dữ liệu và định dạng |
+| 3 | Data Deduplication | Phát hiện và xử lý dữ liệu trùng lặp |
+| 4 | Data Quality | Kiểm tra dữ liệu thiếu, sai định dạng và bất thường |
+| 5 | Date Processing | Chuẩn hóa ngày đơn hàng với nhiều định dạng |
+| 6 | Data Warehouse | Kiểm tra kết quả nạp dữ liệu |
+| 7 | Data Pseudonymization | Ẩn danh dữ liệu bằng HMAC-SHA256 |
+| 8 | Customer Segmentation | Phân khúc khách hàng theo QT-12 |
+| 9 | Regression Testing | Kiểm tra lại các lỗi đã được sửa |
 
-| Thành phần | Mô tả |
+### 2.2. Ngoài phạm vi
+
+- Kiểm thử tải và hiệu năng trên môi trường production.
+- Kiểm thử tích hợp với hệ thống bên thứ ba chưa được triển khai.
+- Kiểm thử phân quyền người dùng ở môi trường production.
+- Kiểm thử bảo mật chuyên sâu bởi đơn vị độc lập.
+
+## 3. Phương pháp kiểm thử
+
+| Phương pháp | Mục đích |
 |---|---|
+| Functional Testing | Kiểm tra chức năng xử lý dữ liệu |
+| Boundary Testing | Kiểm tra các giá trị ở ngưỡng điều kiện |
+| Negative Testing | Kiểm tra dữ liệu sai hoặc không hợp lệ |
+| Data Quality Testing | Đánh giá chất lượng dữ liệu |
+| Regression Testing | Đảm bảo chức năng cũ vẫn hoạt động sau khi sửa lỗi |
+
+## 4. Môi trường kiểm thử
+
+| Thành phần | Công nghệ |
+|---|---|
+| Ngôn ngữ | Python 3.13 |
+| Xử lý dữ liệu | Pandas, NumPy |
+| Kiểm thử tự động | Pytest |
+| Giao diện | Streamlit |
+| Container | Docker, Docker Compose |
 | Hệ điều hành | Windows |
-| Ngôn ngữ | Python 3.13.15 |
-| Framework | pytest 9.1.1 |
-| Công cụ | VS Code, Git |
-| Môi trường | `.venv` |
-| Dữ liệu | Bộ dữ liệu kiểm thử độc lập |
-| Phương pháp | Kiểm thử tự động |
+| Quản lý mã nguồn | Git, GitHub |
 
-## 4. Danh sách Test Case
+## 5. Danh sách Test Case
 
-### 4.1. Kiểm thử nạp kho dữ liệu
+### 5.1. Data Loading và Data Warehouse
 
 | ID | Test Case | Kết quả mong đợi |
 |---|---|---|
-| TC-01 | Từ chối khóa nghiệp vụ trùng | Không nạp bản ghi trùng |
-| TC-02 | Từ chối mã bản ghi khách hàng trùng | Không tạo khách hàng trùng |
-| TC-03 | Ghi nhận đơn hàng có thành tiền không hợp lệ | Ghi nhận lỗi dữ liệu |
-| TC-04 | Ghi nhận đơn hàng có ngày không hợp lệ | Ghi nhận lỗi dữ liệu |
-| TC-05 | Nạp đơn hàng và đánh dấu khách hàng chưa xác định | Đơn hàng được ghi nhận, khách hàng UNKNOWN |
-| TC-06 | Từ chối thiếu mã bản ghi khách hàng | Không nạp dữ liệu không đủ điều kiện |
-| TC-07 | Từ chối thiếu cột bắt buộc | Báo lỗi thiếu cột |
-| TC-08 | Nạp kho lần hai | Không phát sinh bản ghi trùng |
+| TC-01 | Đọc dữ liệu khách hàng đầu vào | Dữ liệu được đọc thành công |
+| TC-02 | Kiểm tra mã khách hàng bị thiếu hoặc trùng | Phát hiện và xử lý theo quy tắc |
+| TC-03 | Đọc dữ liệu đơn hàng | Dữ liệu đơn hàng được tiếp nhận |
+| TC-04 | Kiểm tra ngày đơn hàng không hợp lệ | Phát hiện giá trị ngày không hợp lệ |
+| TC-05 | Kiểm tra giá trị đơn hàng âm | Dữ liệu không hợp lệ được xử lý |
+| TC-06 | Kiểm tra bản ghi trùng lặp | Bản ghi trùng được phát hiện |
+| TC-07 | Nạp dữ liệu vào Data Warehouse | Dữ liệu được nạp theo cấu trúc |
+| TC-08 | Kiểm tra dữ liệu sau khi nạp | Kết quả được lưu và có thể truy xuất |
 
-### 4.2. Kiểm thử chuẩn hóa dữ liệu
-
-| ID | Test Case | Kết quả mong đợi |
-|---|---|---|
-| TC-09 | Chuẩn hóa ngày theo định dạng khác | Chuẩn hóa ngày chính xác |
-| TC-10 | Ngày rỗng | Trả về giá trị thiếu |
-| TC-11 | Ngày không hợp lệ | Trả về giá trị thiếu |
-| TC-12 | Ngày hợp lệ | Chuẩn hóa đúng ngày |
-| TC-13 | Thành tiền có khoảng trắng | Chuẩn hóa thành số đúng |
-| TC-14 | Thành tiền có dấu phân cách hàng nghìn | Chuyển thành số đúng |
-| TC-15 | Thành tiền rỗng | Trả về giá trị thiếu |
-| TC-16 | Thành tiền không hợp lệ | Trả về giá trị thiếu |
-| TC-17 | Thành tiền âm | Trả về giá trị thiếu |
-| TC-18 | Thành tiền hợp lệ | Chuyển thành số đúng |
-| TC-19 | Thành tiền dạng tiền Việt | Chuyển thành số đúng |
-| TC-20 | Thành tiền bằng 0 | Giữ giá trị 0 hợp lệ |
-
-### 4.3. Kiểm thử xử lý đơn hàng
+### 5.2. Data Normalization
 
 | ID | Test Case | Kết quả mong đợi |
 |---|---|---|
-| TC-21 | Tách đơn hàng hợp lệ và bị từ chối | Phân loại đúng, không mất bản ghi |
+| TC-09 | Chuẩn hóa định dạng ngày tháng | Ngày tháng được đưa về định dạng thống nhất |
+| TC-10 | Chuẩn hóa dữ liệu văn bản | Dữ liệu được xử lý theo quy tắc |
+| TC-11 | Xử lý giá trị NULL | Giá trị thiếu được xử lý phù hợp |
+| TC-12 | Kiểm tra kiểu dữ liệu | Các cột có kiểu dữ liệu phù hợp |
+| TC-13 | Kiểm tra dữ liệu số | Giá trị số được chuyển đổi chính xác |
+| TC-14 | Kiểm tra bản ghi trùng sau chuẩn hóa | Không giữ lại bản ghi trùng theo quy tắc |
+| TC-15 | Kiểm tra dữ liệu không hợp lệ | Dữ liệu lỗi được phát hiện |
+| TC-16 | Kiểm tra tính nhất quán dữ liệu | Dữ liệu sau chuẩn hóa thống nhất |
+| TC-17 | Kiểm tra dữ liệu khách hàng | Thông tin khách hàng được xử lý đúng |
+| TC-18 | Kiểm tra dữ liệu đơn hàng | Thông tin đơn hàng được xử lý đúng |
+| TC-19 | Kiểm tra dữ liệu sau ETL | Dữ liệu đầu ra đáp ứng yêu cầu |
+| TC-20 | Kiểm tra kết quả tổng hợp | Kết quả tổng hợp được tạo chính xác |
 
-### 4.4. Kiểm thử phân khúc khách hàng QT-12
+### 5.3. Xử lý đơn hàng và ngày tháng
 
 | ID | Test Case | Kết quả mong đợi |
 |---|---|---|
-| TC-22 | VIP theo ngưỡng chi tiêu | Gán VIP đúng |
-| TC-23 | VIP theo số lượng đơn | Gán VIP đúng |
-| TC-24 | Thường xuyên theo ngưỡng chi tiêu | Gán Thường xuyên đúng |
-| TC-25 | Thường xuyên theo số lượng đơn | Gán Thường xuyên đúng |
-| TC-26 | Khách hàng mới | Gán Mới đúng |
-| TC-27 | Khách hàng ngủ đông | Gán Ngủ đông đúng |
-| TC-28 | VIP ưu tiên cao hơn Thường xuyên | Gán VIP đúng |
-| TC-29 | Thường xuyên ưu tiên cao hơn Mới | Gán Thường xuyên đúng |
-| TC-30 | Hàm phân khúc không thay đổi DataFrame đầu vào | Dữ liệu ban đầu không bị thay đổi |
+| TC-21 | Xử lý đơn hàng có ngày tháng hỗn hợp | Các định dạng ngày được xử lý đúng |
+| TC-22 | Xử lý ngày tháng không thể chuyển đổi | Giá trị lỗi được phát hiện, không làm sai dữ liệu hợp lệ |
 
-## 5. Phân loại kiểm thử
+### 5.4. Data Quality và bảo mật dữ liệu
 
-| Nhóm kiểm thử | Nội dung | Test Case tiêu biểu |
+| ID | Test Case | Kết quả mong đợi |
 |---|---|---|
-| Functional | Kiểm tra luồng xử lý dữ liệu hợp lệ, nạp dữ liệu và phân khúc | TC-05, TC-12, TC-18, TC-22 |
-| Boundary | Kiểm tra giá trị biên và ngưỡng phân khúc | TC-17, TC-20, TC-22, TC-23 |
-| Negative | Kiểm tra dữ liệu sai định dạng, thiếu dữ liệu và dữ liệu không hợp lệ | TC-03, TC-04, TC-07, TC-11, TC-16 |
-| Data Quality | Kiểm tra khóa trùng, khách hàng chưa xác định và dữ liệu thiếu | TC-01, TC-02, TC-05, TC-06 |
-| Regression | Kiểm tra khả năng nạp lại dữ liệu và bảo toàn dữ liệu đầu vào | TC-08, TC-30 |
+| TC-23 | Kiểm tra tỷ lệ dữ liệu thiếu | Thống kê được giá trị thiếu |
+| TC-24 | Kiểm tra chất lượng theo từng cột | Kết quả đánh giá được tổng hợp |
+| TC-25 | Kiểm tra dữ liệu bất thường | Các giá trị bất thường được nhận diện |
+| TC-26 | Kiểm tra ẩn danh thông tin khách hàng | Thông tin định danh được thay thế bằng mã giả danh |
+| TC-27 | Kiểm tra tính ổn định của HMAC | Cùng đầu vào và secret cho cùng kết quả |
+| TC-28 | Kiểm tra secret không hợp lệ hoặc bị thiếu | Hệ thống từ chối tiếp tục xử lý khi thiếu điều kiện bảo mật |
 
-## 6. Phương pháp thực thi
+### 5.5. Customer Segmentation – QT-12
 
-### 6.1. Chạy toàn bộ Test Suite
+| ID | Test Case | Kết quả mong đợi |
+|---|---|---|
+| TC-29 | Khách hàng đạt điều kiện VIP theo doanh thu | Được phân khúc VIP |
+| TC-30 | Khách hàng đạt điều kiện VIP theo số đơn | Được phân khúc VIP |
+| TC-31 | Khách hàng đạt điều kiện Thường xuyên | Được phân khúc Thường xuyên |
+| TC-32 | Khách hàng có đúng một đơn hợp lệ trong 90 ngày | Được phân khúc Mới nếu không thuộc nhóm ưu tiên cao hơn |
+| TC-33 | Khách hàng không đạt các điều kiện phía trên | Được phân khúc Ngủ đông |
+| TC-34 | Khách hàng đồng thời thỏa nhiều điều kiện | Áp dụng thứ tự ưu tiên VIP → Thường xuyên → Mới → Ngủ đông |
+| TC-35 | Kiểm tra ranh giới doanh thu và số đơn | Phân khúc đúng tại ngưỡng QT-12 |
+| TC-36 | Kiểm tra thời gian tính toán phân khúc | Sử dụng khoảng thời gian và quy tắc ngày đã quy định |
 
-```powershell
+### 5.6. Regression Testing
+
+| ID | Test Case | Kết quả mong đợi |
+|---|---|---|
+| TC-37 | Kiểm tra hồi quy sau khi sửa lỗi xử lý ngày hỗn hợp | Dữ liệu ngày hợp lệ vẫn được xử lý chính xác |
+
+## 6. Thực thi kiểm thử
+
+Sử dụng Pytest để chạy kiểm thử tự động.
+
+**Chạy toàn bộ kiểm thử:**
+
+```bash
 python -m pytest tests -v
 ```
 
-### 6.2. Kiểm tra danh sách Test Case
+**Chạy kiểm thử và hiển thị kết quả ngắn gọn:**
 
-```powershell
+```bash
+python -m pytest -q
+```
+
+**Kiểm tra danh sách test được thu thập:**
+
+```bash
 python -m pytest tests --collect-only -q
 ```
 
-### 6.3. Ghi nhận kết quả
-
-- Ghi nhận kết quả thực tế của từng Test Case.
-- Đối chiếu kết quả thực tế với kết quả mong đợi.
-- Tổng hợp số lượng PASS, FAIL và BLOCKED.
-- Lưu ảnh chụp kết quả kiểm thử tại `docs/screenshots/`.
-- Chi tiết kết quả thực thi được trình bày trong `docs/test-report.md`.
-
 ## 7. Tiêu chí đánh giá
 
-| Trạng thái | Điều kiện |
+| Trạng thái | Ý nghĩa |
 |---|---|
-| PASS | Kết quả thực tế đúng với kết quả mong đợi |
-| FAIL | Kết quả thực tế khác kết quả mong đợi |
+| PASS | Kết quả thực tế đáp ứng kết quả mong đợi |
+| FAIL | Kết quả thực tế không đáp ứng yêu cầu |
 | BLOCKED | Không thể thực hiện do thiếu điều kiện hoặc môi trường |
 
-## 8. Kết quả kiểm thử hiện tại
+Một Test Case chỉ được đánh dấu PASS khi đã có kết quả thực thi hoặc bằng chứng kiểm thử phù hợp.
 
-- Tổng số Test Case tự động: 30.
-- Kết quả kiểm thử gần nhất: 30/30 PASS.
-- Số Test Case FAIL: 0.
-- Số Test Case BLOCKED: 0.
-- Chi tiết kết quả và minh chứng được ghi nhận trong `docs/test-report.md`.
+## 8. Kết quả kiểm thử
+
+Theo lần chạy kiểm thử tự động gần nhất được ghi nhận:
+
+| Chỉ tiêu | Kết quả |
+|---|---:|
+| Tổng số test tự động | 37 |
+| PASS | 37 |
+| FAIL | 0 |
+| Thời gian chạy gần nhất được ghi nhận | 1.40 giây |
+
+**Lưu ý:** 37 là số lượng bài kiểm thử tự động được Pytest thu thập và thực thi, không phải số lượng Test Case nghiệp vụ ban đầu. Danh sách Test Case trong tài liệu mô tả phạm vi và mục tiêu kiểm thử; trạng thái thực tế cần đối chiếu với kết quả chạy và báo cáo kiểm thử.
+
+Kết quả chi tiết được trình bày trong `docs/test-report.md`.
+
+## 9. Tài liệu liên quan
+
+- `docs/test-report.md`: Báo cáo kết quả kiểm thử.
+- `docs/bug-log.md`: Nhật ký lỗi và quá trình khắc phục.
+- `docs/bao-cao-chat-luong.md`: Báo cáo chất lượng dữ liệu.
+- `docs/bao-cao-nap-kho.md`: Báo cáo nạp dữ liệu vào Data Warehouse.
+- `docs/SECURITY-CHECKLIST.md`: Danh sách kiểm tra bảo mật.
+- `tests/`: Mã nguồn kiểm thử tự động.
