@@ -1,11 +1,11 @@
-# TEST REPORT – SMART CRM
+﻿# TEST REPORT – SMART CRM
 
 **Dự án:** Smart CRM – L1: Hồ sơ khách hàng và phân khúc  
 **Người thực hiện:** Trần Thị Như Quỳnh  
 **MSSV:** 2374802010428  
 **Track:** Data Analyst  
-**Ngày kiểm thử:** 13/11/2026  
-**Phiên bản:** 1.3
+**Ngày kiểm thử gần nhất:** 22/11/2026
+**Phiên bản:** 1.4
 
 ## 1. Môi trường kiểm thử
 
@@ -16,19 +16,18 @@
 | Framework kiểm thử | pytest 9.1.1 |
 | Môi trường thực thi | `.venv` |
 | Công cụ | VS Code, Git |
-| Lệnh kiểm thử | `python -m pytest tests -v` |
+| Lệnh kiểm thử | `python -m pytest -q` |
 
 ## 2. Kết quả kiểm thử tổng thể
 
 | Nội dung | Kết quả |
 |---|---:|
-| Tổng số Test Case tự động | 30 |
-| PASS | 30 |
+| Tổng số kiểm thử tự động | 37 |
+| PASS | 37 |
 | FAIL | 0 |
-| BLOCKED | 0 |
-| Thời gian thực thi | 1.07 giây |
+| Thời gian thực thi | 1.58 giây |
 
-**Kết luận:** Toàn bộ 30 Test Case tự động đạt trạng thái PASS trong lần kiểm thử ngày 13/11/2026.
+**Kết luận:** Toàn bộ 37 kiểm thử tự động đạt trạng thái PASS trong lần kiểm thử ngày 22/11/2026.
 
 ## 3. Bảng Test Case đại diện
 
@@ -86,11 +85,11 @@ Các ảnh minh chứng được lưu tại thư mục `docs/screenshots/`.
 | `TEST-03-pytest-final.png` | Kết quả chạy toàn bộ Test Suite |
 | `TEST-04-QT12-final.png` | Kết quả kiểm thử quy tắc phân khúc QT-12 |
 
-Các ảnh trên ghi nhận kết quả thực thi kiểm thử tại thời điểm lập báo cáo.
+Các ảnh minh chứng cần phản ánh đúng kết quả kiểm thử gần nhất được ghi trong báo cáo.
 
 ## 7. Kết luận
 
-Trong lần kiểm thử ngày 13/11/2026, hệ thống đạt kết quả 30/30 Test Case PASS, không có trường hợp FAIL hoặc BLOCKED. Thời gian thực thi toàn bộ Test Suite là 1.07 giây.
+Trong lần kiểm thử ngày 22/11/2026, hệ thống đạt kết quả 37/37 kiểm thử tự động PASS, không có trường hợp FAIL. Thời gian thực thi toàn bộ Test Suite là 1.58 giây.
 
 Các nội dung được kiểm thử bao gồm chuẩn hóa dữ liệu đầu vào, nạp dữ liệu vào kho dữ liệu, xử lý và phân loại đơn hàng, kiểm tra chất lượng dữ liệu và phân khúc khách hàng theo quy tắc QT-12.
 
