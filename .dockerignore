@@ -15,3 +15,7 @@ unknown_name_check.csv
 unknown_phone_candidates.csv
 unknown_records.csv
 .env
+# Exclude local customer data from Docker image
+/data/raw/
+/data/processed/
+/data/warehouse/
