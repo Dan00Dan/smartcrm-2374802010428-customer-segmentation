@@ -30,3 +30,7 @@ data/warehouse/
 /unknown_name_check.csv
 /unknown_phone_candidates.csv
 /unknown_records.csv
+Add-Content .gitignore "`n# Temporary customer analysis files"
+Add-Content .gitignore "duplicate_customer_phones.csv"
+Add-Content .gitignore "duplicate_phone_summary.csv"
+Add-Content .gitignore "phone_analysis.csv"
