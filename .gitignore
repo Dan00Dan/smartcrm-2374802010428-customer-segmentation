@@ -25,3 +25,8 @@ Thumbs.db
 **/.ipynb_checkpoints/
 # Du lieu kho sinh ra khi chay ETL
 data/warehouse/
+/check_unknown.py
+/unknown_analysis.csv
+/unknown_name_check.csv
+/unknown_phone_candidates.csv
+/unknown_records.csv
