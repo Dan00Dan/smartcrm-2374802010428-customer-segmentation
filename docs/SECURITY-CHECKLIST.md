@@ -1,9 +1,9 @@
-# Smart CRM – Security Checklist
+# SMART CRM – SECURITY CHECKLIST
 
 ## 1. Environment Variables
 
 - [x] `.env` is excluded from Git using `.gitignore`.
-- [x] `.env` is excluded from Docker build context using `.dockerignore`.
+- [x] `.env` is excluded from the Docker build context using `.dockerignore`.
 - [x] `.env.example` contains configuration templates without real secrets.
 - [x] `.env` is not tracked by Git.
 
@@ -13,18 +13,20 @@
 - [x] `.dockerignore` excludes unnecessary files from Docker images.
 - [x] `.env` is excluded from Git and is not tracked.
 - [x] `.env.example` contains configuration templates without real secrets.
-- [x] GitHub Secret Scanning reports no unresolved secrets.
+- [x] GitHub Secret Scanning reports no unresolved secrets at the time of verification.
 - [x] Git history has been reviewed using PowerShell pattern-based scanning.
 - [x] No matching password, API key, or credential patterns were identified in the reviewed Git history.
-- [x] Gitleaks 8.30.1 full Git history scan completed successfully.
-- [x] Gitleaks scanned 46 commits and reported `no leaks found`.
+- [x] Gitleaks 8.30.1 full Git history scan was performed.
+- [x] The recorded Gitleaks scan reported `no leaks found` in the 46 commits included in that scan.
+
+**Note:** The Gitleaks result above refers to the previously recorded scan. A new full-history scan should be performed after the latest documentation changes to verify the current repository state.
 
 ## 3. Application Security
 
 - [x] Input data is validated before processing.
 - [x] Database credentials are not hard-coded in application source code.
 - [ ] Error messages have been reviewed to ensure sensitive configuration values are not exposed.
-- [ ] Access to sensitive customer data is restricted appropriately (full authentication and authorization are not implemented).
+- [ ] Access to sensitive customer data is restricted appropriately; full authentication and authorization have not been implemented.
 
 ## 4. Deployment Security
 
@@ -32,8 +34,8 @@
 - [x] Application healthcheck is configured.
 - [x] Docker deployment has been tested in a clean repository clone.
 - [x] Dashboard is accessible in the local demonstration environment.
-- [ ] Production deployment uses appropriate access controls (not implemented).
-- [ ] Production environment uses secure configuration values (production deployment not verified).
+- [ ] Production deployment uses appropriate access controls; not implemented.
+- [ ] Production environment uses secure configuration values; production deployment has not been verified.
 
 ## 5. Verification
 
@@ -42,28 +44,29 @@
 - [x] Dashboard is accessible at `http://localhost:8501` in the original environment.
 - [x] Dashboard is accessible at `http://localhost:8502` in the clean-clone deployment test.
 - [x] `.env` is ignored by Git and Docker.
-- [x] GitHub Secret Scanning reports no unresolved secrets.
+- [x] GitHub Secret Scanning reported no unresolved secrets at the time of verification.
 - [x] PowerShell pattern-based Git history scan completed without matching results.
-- [x] Gitleaks 8.30.1 scanned 46 Git commits successfully.
-- [x] Gitleaks reported `no leaks found`.
+- [x] Gitleaks 8.30.1 completed a full Git history scan of 46 commits.
+- [x] The recorded Gitleaks scan reported `no leaks found`.
 
 ## 6. Security Limitations
 
 - The application is currently intended for local development and demonstration.
 - Production authentication and authorization have not been fully implemented.
 - Customer data access restrictions require further improvement before production deployment.
-- Gitleaks did not detect secrets in the scanned 46 commits; this does not guarantee that all possible secrets are absent.
+- The recorded Gitleaks scan did not detect secrets in the 46 scanned commits; this does not guarantee that all possible secrets are absent.
 - PowerShell pattern-based scanning is preliminary and does not guarantee detection of all secret types.
 - Production security controls have not been fully verified.
 - The clean-clone deployment test verified Docker build, container health, and dashboard availability; warehouse data was not available in the clean clone.
+- The recorded Gitleaks result does not include commits created after that scan.
 
 ## 7. Security Assessment
 
-The application has implemented basic repository security, environment configuration protection, input validation, and Docker deployment checks.
+The application has implemented basic repository security, environment configuration protection, input validation, and Docker deployment verification.
 
-GitHub Secret Scanning reports no unresolved secrets. A PowerShell pattern-based Git history review was also performed without matching credential patterns.
+GitHub Secret Scanning reported no unresolved secrets at the time of verification. A PowerShell pattern-based Git history review was also performed without identifying matching credential patterns.
 
-Gitleaks 8.30.1 successfully scanned 46 Git commits and reported `no leaks found`. This result does not guarantee the absence of all possible secrets.
+Gitleaks 8.30.1 successfully scanned 46 Git commits and reported `no leaks found`. This result applies only to the commits included in that scan and does not guarantee the absence of all possible secrets in the current or future repository history.
 
 The current security verification is limited to the local demonstration environment. Application error disclosure review and production access-control verification remain outstanding.
 

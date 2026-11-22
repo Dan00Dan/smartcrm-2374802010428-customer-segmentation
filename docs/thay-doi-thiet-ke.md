@@ -4,15 +4,17 @@
 **Sinh viên:** Trần Thị Như Quỳnh
 **MSSV:** 2374802010428
 **Track:** Data Analyst
-**Phiên bản:** 2.0
+**Phiên bản tài liệu:** 2.1
 
-Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT3; các quyết định xử lý, lý do, ảnh hưởng đến thiết kế và những vấn đề được ghi nhận nhưng chưa thực hiện. Các thay đổi được phân loại thành ba nhóm: phải sửa, nên sửa và ghi nhận không sửa.
+Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT3; các quyết định xử lý, lý do, ảnh hưởng đến thiết kế và những vấn đề được ghi nhận nhưng chưa thực hiện.
+
+Các thay đổi được phân loại thành ba nhóm: **phải sửa hoặc làm rõ**, **nên sửa** và **ghi nhận không sửa**.
 
 ---
 
 ## 1. Ghi nhận các thay đổi thiết kế
 
-### TD-01 – Số lượng User Story
+### TD-01 – Điều chỉnh số lượng User Story
 
 - **Phản hồi:** BT1 có 8 User Story, trong khi yêu cầu là 5–7 User Story. Giảng viên đề xuất gộp các yêu cầu phù hợp để giảm số lượng.
 - **Quyết định:** PHẢI SỬA.
@@ -26,34 +28,37 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Quyết định:** PHẢI SỬA.
 - **Lý do:** Giúp người đọc hiểu thống nhất các khái niệm được sử dụng trong yêu cầu và quy tắc phân khúc khách hàng.
 - **Thay đổi:** Bổ sung và chuẩn hóa phần thuật ngữ trong `docs/srs.md`.
+- **Kết quả:** Các thuật ngữ nghiệp vụ được giải thích rõ hơn trong tài liệu yêu cầu.
 
-### TD-03 – Thông tin lưu trữ lỗi và lần chạy
+### TD-03 – Làm rõ thông tin lưu trữ lỗi và lần chạy
 
 - **Phản hồi:** Kiến trúc đề cập việc lưu báo cáo lỗi và thông tin lần chạy, nhưng sơ đồ dữ liệu kho chưa có bảng tương ứng.
 - **Quyết định:** PHẢI LÀM RÕ.
 - **Lý do:** Phân biệt dữ liệu phục vụ phân tích khách hàng với thông tin phục vụ theo dõi vận hành.
-- **Thay đổi:** Bổ sung mô tả về nhật ký vận hành trong `docs/srs.md`, quy định các thông tin cần ghi nhận gồm mã lần chạy, kỳ phân tích, thời điểm chạy, trạng thái thực hiện và thông tin lỗi phù hợp. Sơ đồ `docs/architecture.drawio` thể hiện khối lưu trữ kết quả, báo cáo lỗi và thông tin lần chạy.
+- **Thay đổi:** Bổ sung mô tả về nhật ký vận hành trong `docs/srs.md`; xác định các thông tin cần ghi nhận gồm mã lần chạy, kỳ phân tích, thời điểm chạy, trạng thái thực hiện và thông tin lỗi phù hợp. Sơ đồ `docs/architecture.drawio` thể hiện khối lưu trữ kết quả, báo cáo lỗi và thông tin lần chạy.
 - **Ảnh hưởng:** Làm rõ yêu cầu và kiến trúc lưu trữ ở mức thiết kế. Nhật ký vận hành được xác định là thành phần riêng, không thuộc lược đồ hình sao phục vụ phân tích.
-- **Giới hạn hiện tại:** Chưa xác nhận có bảng nhật ký vận hành độc lập được triển khai trong kho dữ liệu. Nội dung này được ghi nhận ở mức yêu cầu thiết kế, không khẳng định là chức năng đã hoàn thiện.
+- **Giới hạn hiện tại:** Chưa triển khai hoặc xác nhận có bảng nhật ký vận hành độc lập trong kho dữ liệu. Nội dung này mới được làm rõ ở mức yêu cầu và thiết kế, không được xem là chức năng đã hoàn thiện.
+- **Kết quả:** Đã xử lý phần thiếu rõ ràng trong tài liệu thiết kế; việc triển khai thành phần lưu trữ nhật ký vẫn là nội dung cần xem xét ở giai đoạn tiếp theo.
 
-### TD-04 – Tài liệu trong repository
+### TD-04 – Bổ sung tài liệu trong repository
 
 - **Phản hồi:** Tại thời điểm đánh giá BT1, repository còn thiếu một số tài liệu cần thiết như SRS, sơ đồ thiết kế gốc, wireframe, khai báo sử dụng AI và yêu cầu dữ liệu.
 - **Quyết định:** PHẢI SỬA.
 - **Lý do:** Bảo đảm tài liệu phân tích và thiết kế được lưu trong repository để thuận tiện kiểm tra, theo dõi thay đổi và phát triển tiếp.
 - **Thay đổi:** Bổ sung các tài liệu trong thư mục `docs/`, gồm `srs.md`, các sơ đồ `.drawio`, `wireframe.png`, `ai-disclosure.md` và `data-requirements.md`.
+- **Kết quả:** Các tài liệu phân tích và thiết kế chính được đưa vào repository.
 
-### TD-05 – Sửa xử lý ngày trong ETL
+### TD-05 – Sửa lỗi xử lý ngày trong ETL
 
 - **Vấn đề:** Module nạp dữ liệu vào kho tham chiếu cột `order_date` trước khi cột này được tạo từ dữ liệu nguồn `ngay`.
 - **Quyết định:** PHẢI SỬA.
 - **Thay đổi:** Chuẩn hóa dữ liệu ngày từ cột nguồn `ngay` bằng `pd.to_datetime`, sử dụng `format="mixed"`, `dayfirst=True` và `errors="coerce"`.
 - **Lý do:** Hỗ trợ dữ liệu ngày có nhiều định dạng và chuyển các giá trị không hợp lệ thành giá trị thiếu để quy trình kiểm tra chất lượng xử lý.
 - **Ảnh hưởng:** Cập nhật `src/etl/load_warehouse.py`.
-- **Kết quả kiểm chứng:** Bộ kiểm thử toàn dự án gần nhất đạt 37 passed, 0 failed.
+- **Kết quả kiểm chứng:** Bộ kiểm thử toàn dự án gần nhất được ghi nhận đạt 37 passed, 0 failed.
 - **Commit liên quan:** `289f6e1 – Fix warehouse order date parsing`.
 
-### TD-06 – Trạng thái truy vấn Dashboard
+### TD-06 – Bổ sung trạng thái truy vấn Dashboard
 
 - **Phản hồi:** Dashboard chưa có minh chứng đầy đủ cho ba trạng thái: đang truy vấn, bộ lọc rỗng và lỗi kết nối dữ liệu.
 - **Quyết định:** NÊN SỬA.
@@ -61,6 +66,7 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Lý do:** Giúp người dùng nhận biết trạng thái xử lý và nguyên nhân không hiển thị dữ liệu.
 - **Ảnh hưởng:** Điều chỉnh `app.py`.
 - **Kiểm chứng:** Đối chiếu các trạng thái truy vấn và ảnh minh chứng Dashboard.
+- **Kết quả:** Đã bổ sung các trạng thái phản hồi trong giao diện.
 
 ### TD-07 – Bổ sung mốc tham chiếu biểu đồ
 
@@ -70,6 +76,7 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Lý do:** Hỗ trợ người dùng so sánh quy mô dữ liệu giữa các tháng và các phân khúc.
 - **Ảnh hưởng:** Điều chỉnh hàm `render_svg_chart` và các biểu đồ liên quan trong `app.py`.
 - **Kiểm chứng:** Đối chiếu đường tham chiếu trên Dashboard.
+- **Kết quả:** Đã bổ sung mốc tham chiếu trên các biểu đồ liên quan.
 
 ### TD-08 – Làm rõ cơ chế Migration và Seed
 
@@ -77,7 +84,8 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Quyết định:** NÊN SỬA.
 - **Thay đổi:** Bổ sung `docs/migration-seed.md`, mô tả cơ chế khởi tạo kho CSV bằng ETL snapshot và seed dữ liệu kiểm thử bằng `pandas.DataFrame`.
 - **Lý do:** Làm rõ cách khởi tạo dữ liệu và tái lập kiểm thử mà không phụ thuộc vào SQL Migration.
-- **Kiểm chứng:** Bộ kiểm thử toàn dự án gần nhất đạt 37 passed, 0 failed.
+- **Kiểm chứng:** Đối chiếu tài liệu với quy trình ETL và bộ kiểm thử.
+- **Kết quả:** Đã bổ sung tài liệu mô tả cơ chế Migration và Seed phù hợp với kiến trúc kho CSV hiện tại.
 
 ### TD-09 – Bổ sung Bug Log theo phản hồi BT3
 
@@ -86,6 +94,7 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Thay đổi:** Bổ sung `docs/bug-log.md` với 4 lỗi Major, gồm lỗi mã hồ sơ khách hàng, ngày đơn hàng, thành tiền và phân tích nhiều định dạng ngày.
 - **Lý do:** Bảo đảm có thể truy vết lỗi, cách xử lý và thay đổi mã nguồn.
 - **Kiểm chứng:** Bổ sung kiểm thử hồi quy và liên kết commit `e7def4a`, `289f6e1`.
+- **Kết quả:** Đã ghi nhận các lỗi chính, phương án xử lý và thông tin commit liên quan.
 
 ### TD-10 – Bổ sung Deployment Guide
 
@@ -93,7 +102,8 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Quyết định:** PHẢI SỬA.
 - **Thay đổi:** Bổ sung `docs/deployment-guide.md`, hướng dẫn chuẩn bị môi trường, cấu hình biến môi trường, triển khai Docker Compose, kiểm tra Dashboard và xử lý lỗi thường gặp.
 - **Lý do:** Giúp người khác có thể triển khai và kiểm tra hệ thống từ repository.
-- **Kiểm chứng:** Kiểm tra cấu hình bằng `docker compose config --quiet`; Docker đã được chạy và Dashboard truy cập tại `http://localhost:8501`.
+- **Kiểm chứng:** Kiểm tra cấu hình bằng `docker compose config --quiet`; Docker đã được chạy và Dashboard truy cập tại `http://localhost:8501` trong môi trường ban đầu.
+- **Kết quả:** Đã bổ sung hướng dẫn triển khai và kiểm tra hệ thống bằng Docker.
 
 ### TD-11 – Bổ sung đo lường chất lượng dữ liệu D3
 
@@ -101,7 +111,8 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Quyết định:** PHẢI SỬA.
 - **Thay đổi:** Bổ sung mã kiểm tra chất lượng, kiểm thử và báo cáo chất lượng dữ liệu theo cột trong các tài liệu và mã nguồn liên quan.
 - **Lý do:** Giúp phát hiện, thống kê và truy vết các vấn đề chất lượng dữ liệu thay vì chỉ đưa ra nhận xét tổng quan.
-- **Tài liệu liên quan:** `src/quality/check_quality.py`, `tests/test_quality.py`, `docs/bao-cao-chat-luong.md`, `docs/data-quality-by-column.csv`.
+- **Tài liệu và mã nguồn liên quan:** `src/quality/check_quality.py`, `tests/test_quality.py`, `docs/bao-cao-chat-luong.md`, `docs/data-quality-by-column.csv`.
+- **Kết quả:** Đã bổ sung thành phần kiểm tra chất lượng dữ liệu và tài liệu báo cáo kết quả.
 
 ### TD-12 – Giả danh hóa dữ liệu cá nhân D4
 
@@ -111,20 +122,21 @@ Tài liệu ghi nhận các phản hồi của giảng viên qua BT1, BT2 và BT
 - **Lý do:** Hạn chế việc lộ thông tin cá nhân trong dữ liệu phục vụ phân tích.
 - **Tài liệu và mã nguồn liên quan:** `src/etl/load_warehouse.py`, `src/load/save_results.py`, `src/pipeline.py`.
 - **Lưu ý:** Không đưa khóa bí mật hoặc tệp `.env` lên GitHub.
+- **Kết quả:** Đã bổ sung cơ chế giả danh hóa trong quy trình xử lý dữ liệu. Đây không phải là thay thế cho cơ chế xác thực và phân quyền người dùng.
 
 ---
 
 ## 2. Phân loại theo yêu cầu bài giảng buổi 18
 
-### 2.1. Phải sửa
+### 2.1. Phải sửa hoặc làm rõ
 
 Các vấn đề ảnh hưởng trực tiếp đến tính đúng đắn nghiệp vụ, chất lượng dữ liệu, bảo vệ dữ liệu cá nhân và khả năng triển khai hệ thống.
 
 | Mã | Nội dung | Lý do | Kết quả |
 |---|---|---|---|
 | TD-01 | Số lượng User Story | Phải đáp ứng phạm vi yêu cầu | Đã sửa |
-| TD-02 | Thuật ngữ nghiệp vụ | Tránh hiểu sai yêu cầu | Đã sửa |
-| TD-03 | Thông tin lưu trữ lỗi và lần chạy | Bảo đảm thiết kế rõ ràng | Đã xử lý theo tài liệu |
+| TD-02 | Thuật ngữ nghiệp vụ | Tránh hiểu sai yêu cầu | Đã bổ sung |
+| TD-03 | Thông tin lưu trữ lỗi và lần chạy | Bảo đảm thiết kế rõ ràng | Đã làm rõ ở mức tài liệu; chưa triển khai bảng nhật ký độc lập |
 | TD-04 | Tài liệu repository | Bảo đảm khả năng kiểm tra | Đã bổ sung |
 | TD-05 | Xử lý ngày ETL | Tránh sai lệch dữ liệu | Đã sửa |
 | TD-09 | Bug Log | Bảo đảm truy vết lỗi và commit | Đã bổ sung |
@@ -156,17 +168,21 @@ Các vấn đề được ghi nhận nhưng chưa thực hiện do giới hạn 
 
 ## 3. Trạng thái kiểm chứng hiện tại
 
-| Nội dung | Kết quả |
+Bảng dưới đây tổng hợp các kết quả đã được ghi nhận trong quá trình thực hiện dự án.
+
+| Nội dung | Kết quả ghi nhận |
 |---|---|
 | User Story | 7 User Story |
 | Bug Log | 4 lỗi Major có commit liên quan |
-| Kiểm thử toàn dự án | 37 passed, 0 failed |
-| Kiểm thử nạp dữ liệu kho | 9 passed, 0 failed |
+| Kiểm thử toàn dự án | Lần chạy gần nhất được ghi nhận: 37 passed, 0 failed |
+| Kiểm thử nạp dữ liệu kho | Kết quả được ghi nhận: 9 passed, 0 failed |
 | Data Quality D3 | Có mã kiểm tra, báo cáo và dữ liệu kết quả theo cột |
 | Pseudonymization D4 | Có cơ chế HMAC-SHA256 |
 | Deployment Guide | Có trong `docs/deployment-guide.md` |
-| Docker | Đã chạy container ở trạng thái healthy |
+| Docker | Đã chạy container ở trạng thái `healthy` |
 | GitHub | Các thay đổi đã được commit và push |
+
+**Lưu ý:** Kết quả kiểm thử là số liệu đã ghi nhận tại thời điểm thực hiện, không thay thế cho việc chạy lại bộ kiểm thử khi có thay đổi mã nguồn mới.
 
 ---
 
@@ -174,6 +190,8 @@ Các vấn đề được ghi nhận nhưng chưa thực hiện do giới hạn 
 
 Qua các phản hồi BT1, BT2 và BT3, dự án đã được điều chỉnh theo hướng hoàn thiện yêu cầu nghiệp vụ, xử lý lỗi ETL, nâng cao chất lượng dữ liệu, giả danh hóa thông tin cá nhân và bổ sung tài liệu triển khai.
 
-Các vấn đề bắt buộc đã được ưu tiên xử lý. Những cải tiến về Dashboard và khả năng tái lập kiểm thử đã được triển khai. Các hạn chế do dữ liệu nguồn hoặc phạm vi kiến trúc được ghi nhận và có biện pháp kiểm soát thay vì tự ý suy đoán hoặc sửa dữ liệu.
+Các vấn đề bắt buộc đã được ưu tiên xử lý. Những cải tiến về Dashboard và khả năng tái lập kiểm thử đã được triển khai. Riêng nội dung nhật ký vận hành tại TD-03 đã được làm rõ ở mức tài liệu thiết kế nhưng chưa triển khai thành bảng lưu trữ độc lập.
+
+Các hạn chế do dữ liệu nguồn hoặc phạm vi kiến trúc được ghi nhận và có biện pháp kiểm soát thay vì tự ý suy đoán hoặc sửa dữ liệu.
 
 Tài liệu này được sử dụng để theo dõi lịch sử thay đổi thiết kế, giải trình quyết định kỹ thuật và đối chiếu tiến độ hoàn thiện Smart CRM.
