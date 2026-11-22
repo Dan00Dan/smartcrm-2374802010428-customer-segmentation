@@ -4,36 +4,44 @@
 **Sinh viên:** Trần Thị Như Quỳnh  
 **MSSV:** 2374802010428  
 **Track:** Data Analyst  
-**Phiên bản:** 2.1
+**Phiên bản:** 2.2  
+**Ngày cập nhật:** 22/11/2026
 
 ## 1. Danh sách lỗi đã xử lý
 
-| Bug ID | Mô tả lỗi | Severity | Nguyên nhân | Cách xử lý | Trạng thái | Commit liên kết |
-|---|---|---|---|---|---|---|
-| BUG-01 | Hồ sơ khách hàng thiếu hoặc trùng `record_id` vẫn có thể được đưa vào kho dữ liệu | Major | Phiên bản ETL trước chưa kiểm tra ID rỗng và ID trùng trước khi tạo dimension khách hàng | Bổ sung kiểm tra `record_id` rỗng và trùng; dừng nạp dữ liệu khi phát hiện vi phạm | Đã sửa; có kiểm thử hồi quy | `e7def4a` |
-| BUG-02 | Đơn hàng có ngày không hợp lệ không được ghi nhận đầy đủ trong báo cáo chất lượng dữ liệu | Major | Giá trị ngày không hợp lệ được chuyển thành `NaT`, nhưng chưa được ghi thành một issue riêng | Bổ sung kiểm tra ngày và ghi nhận mã lỗi `INVALID_ORDER_DATE` vào bảng `data_quality_issues.csv` | Đã sửa; có kiểm thử hồi quy | `e7def4a` |
-| BUG-03 | Đơn hàng có thành tiền không hợp lệ chưa được chuẩn hóa và truy vết đầy đủ | Major | Giá trị thành tiền từ nguồn chưa được chuyển đổi và kiểm tra kiểu số trước khi đưa vào kho | Sử dụng `pd.to_numeric(errors="coerce")`; ghi nhận `INVALID_ORDER_AMOUNT` khi giá trị không hợp lệ | Đã sửa; có kiểm thử hồi quy | `e7def4a` |
-| BUG-04 | Một số định dạng ngày tháng không được phân tích chính xác khi nạp dữ liệu vào kho | Major | Chuyển đổi ngày chưa chỉ định chế độ xử lý nhiều định dạng và thứ tự ngày/tháng | Bổ sung `format="mixed"`, `dayfirst=True` và `errors="coerce"` trong `pd.to_datetime()` | Đã sửa; có kiểm thử hồi quy | `289f6e1` |
+| Bug ID | Mô tả lỗi | Severity | Nguyên nhân | Cách xử lý | Test Case liên kết | Commit liên kết | Trạng thái |
+|---|---|---|---|---|---|---|---|
+| BUG-01 | Hồ sơ khách hàng thiếu hoặc trùng `record_id` vẫn có thể được đưa vào kho dữ liệu | Major | ETL trước đó chưa kiểm tra ID rỗng và ID trùng trước khi tạo dimension khách hàng | Bổ sung kiểm tra `record_id` rỗng và trùng; dừng nạp dữ liệu khi phát hiện vi phạm | TC-02 | `e7def4a` | Đã sửa, có kiểm thử hồi quy |
+| BUG-02 | Đơn hàng có ngày không hợp lệ không được ghi nhận đầy đủ trong báo cáo chất lượng dữ liệu | Major | Giá trị ngày không hợp lệ được chuyển thành `NaT`, nhưng chưa được ghi thành issue riêng | Bổ sung kiểm tra ngày và ghi nhận mã lỗi `INVALID_ORDER_DATE` vào `data_quality_issues.csv` | TC-04 | `e7def4a` | Đã sửa, có kiểm thử hồi quy |
+| BUG-03 | Đơn hàng có thành tiền không hợp lệ chưa được chuẩn hóa và truy vết đầy đủ | Major | Giá trị thành tiền chưa được chuyển đổi và kiểm tra kiểu số trước khi đưa vào kho | Sử dụng `pd.to_numeric(errors="coerce")`; ghi nhận `INVALID_ORDER_AMOUNT` khi giá trị không hợp lệ | TC-05 | `e7def4a` | Đã sửa, có kiểm thử hồi quy |
+| BUG-04 | Một số định dạng ngày tháng không được phân tích chính xác khi nạp dữ liệu vào kho | Major | Chuyển đổi ngày chưa xử lý tốt nhiều định dạng và thứ tự ngày/tháng | Bổ sung `format="mixed"`, `dayfirst=True` và `errors="coerce"` trong `pd.to_datetime()` | TC-21 | `289f6e1` | Đã sửa, có kiểm thử hồi quy |
 
 ## 2. Kiểm thử xác nhận
 
 Các trường hợp kiểm thử hồi quy được thực hiện trong `tests/test_load_warehouse.py`:
 
-- `test_missing_customer_record_id_is_rejected`: xác nhận từ chối hồ sơ thiếu mã.
-- `test_duplicate_customer_record_id_is_rejected`: xác nhận từ chối mã hồ sơ trùng.
-- `test_invalid_order_date_is_recorded_as_issue`: xác nhận ghi nhận ngày không hợp lệ.
-- `test_invalid_order_amount_is_recorded_as_issue`: xác nhận ghi nhận thành tiền không hợp lệ.
-- `test_mixed_order_date_formats_are_parsed_correctly`: xác nhận hệ thống phân tích chính xác các định dạng ngày khác nhau khi nạp dữ liệu vào kho.
+| Bug liên quan | Hàm kiểm thử | Nội dung xác nhận |
+|---|---|---|
+| BUG-01 | `test_missing_customer_record_id_is_rejected` | Từ chối hồ sơ thiếu mã |
+| BUG-01 | `test_duplicate_customer_record_id_is_rejected` | Từ chối mã hồ sơ trùng |
+| BUG-02 | `test_invalid_order_date_is_recorded_as_issue` | Ghi nhận ngày không hợp lệ |
+| BUG-03 | `test_invalid_order_amount_is_recorded_as_issue` | Ghi nhận thành tiền không hợp lệ |
+| BUG-04 | `test_mixed_order_date_formats_are_parsed_correctly` | Phân tích chính xác các định dạng ngày khác nhau |
 
-Kiểm thử toàn bộ dự án được thực hiện bằng lệnh:
+**Lệnh kiểm thử toàn bộ dự án:**
 
 ```bash
 python -m pytest tests -v
 ```
 
-**Kết quả lần chạy gần nhất: 37 passed, 0 failed.**
+**Kết quả lần chạy gần nhất:**
 
-Trong đó, riêng nhóm kiểm thử nạp dữ liệu vào kho có kết quả **9 passed, 0 failed**.
+- Tổng số kiểm thử: 37
+- PASS: 37
+- FAIL: 0
+- Thời gian: 1.34 giây
+
+Riêng nhóm kiểm thử nạp dữ liệu vào kho có kết quả được ghi nhận là 9 passed, 0 failed.
 
 ## 3. Các hạn chế dữ liệu nguồn chưa được khắc phục hoàn toàn
 
@@ -46,8 +54,10 @@ Hai vấn đề trên là hạn chế của dữ liệu nguồn, chưa thể xem
 
 ## 4. Kết luận
 
-Các lỗi liên quan đến kiểm tra khóa khách hàng, ghi nhận dữ liệu ngày/thành tiền không hợp lệ và phân tích định dạng ngày đã được xử lý bằng các thay đổi mã nguồn có commit liên kết và kiểm thử xác nhận.
+Bốn lỗi chính liên quan đến kiểm tra khóa khách hàng, ghi nhận ngày không hợp lệ, xử lý thành tiền và phân tích nhiều định dạng ngày đã được xử lý.
 
-Kết quả kiểm thử toàn bộ dự án đạt 37/37 trường hợp thành công, không có trường hợp thất bại tại lần chạy gần nhất.
+Mỗi lỗi có thông tin về nguyên nhân, cách khắc phục, Test Case xác nhận và commit liên kết nhằm bảo đảm khả năng truy vết trong quá trình phát triển.
+
+Kết quả kiểm thử tự động gần nhất đạt 37/37 PASS, không có trường hợp FAIL.
 
 Các hạn chế phụ thuộc vào dữ liệu nguồn được ghi nhận riêng, không tự động giả định hoặc tự sửa dữ liệu khi chưa có căn cứ.
